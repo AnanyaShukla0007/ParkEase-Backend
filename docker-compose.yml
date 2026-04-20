@@ -1,0 +1,57 @@
+version: '3.9'
+
+services:
+
+  postgres:
+    image: postgres:16
+    container_name: parkease-postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: AnaPassword
+      POSTGRES_DB: parkease_auth_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+    networks:
+      - parkease-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  auth-service:
+    build:
+      context: ./AuthService
+      dockerfile: Dockerfile
+    container_name: parkease-auth
+    restart: always
+    ports:
+      - "5001:5001"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:5001
+
+      ConnectionStrings__AuthDb: Host=postgres;Port=5432;Database=parkease_auth_db;Username=postgres;Password=AnaPassword
+
+      JwtSettings__SecretKey: ParkEase@SuperSecretKey#2026!MustBeAtLeast32Chars
+      JwtSettings__Issuer: ParkEase.Auth
+      JwtSettings__Audience: ParkEase.Client
+      JwtSettings__AccessTokenExpiryMinutes: 60
+      JwtSettings__RefreshTokenExpiryDays: 7
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - parkease-network
+
+volumes:
+  postgres_data:
+
+networks:
+  parkease-network:
+    driver: bridge

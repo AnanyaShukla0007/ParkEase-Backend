@@ -1,0 +1,13 @@
+<Solution>
+  <Folder Name="/gateway/">
+    <Project Path="gateway/ParkEase.ApiGateway/ParkEase.ApiGateway.csproj" />
+  </Folder>
+  <Folder Name="/services/" />
+  <Folder Name="/services/auth-service/" />
+  <Folder Name="/services/auth-service/src/">
+    <Project Path="services/auth-service/src/Auth.API/Auth.API.csproj" />
+    <Project Path="services/auth-service/src/Auth.Application/Auth.Application.csproj" />
+    <Project Path="services/auth-service/src/Auth.Domain/Auth.Domain.csproj" />
+    <Project Path="services/auth-service/src/Auth.Infrastructure/Auth.Infrastructure.csproj" />
+  </Folder>
+</Solution>
