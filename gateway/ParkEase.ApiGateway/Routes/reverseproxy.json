@@ -6,6 +6,12 @@
         "Match": {
           "Path": "/api/v1/auth/{**catch-all}"
         }
+      },
+      "parkinglot-route": {
+        "ClusterId": "parkinglot-cluster",
+        "Match": {
+          "Path": "/api/v1/parkinglots/{**catch-all}"
+        }
       }
     },
     "Clusters": {
@@ -13,6 +19,13 @@
         "Destinations": {
           "auth-destination": {
             "Address": "http://localhost:5001/"
+          }
+        }
+      },
+      "parkinglot-cluster": {
+        "Destinations": {
+          "parkinglot-destination": {
+            "Address": "http://localhost:5002/"
           }
         }
       }
