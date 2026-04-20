@@ -10,4 +10,11 @@
     <Project Path="services/auth-service/src/Auth.Domain/Auth.Domain.csproj" />
     <Project Path="services/auth-service/src/Auth.Infrastructure/Auth.Infrastructure.csproj" />
   </Folder>
+  <Folder Name="/services/parkinglot-service/" />
+  <Folder Name="/services/parkinglot-service/src/">
+    <Project Path="services/parkinglot-service/src/ParkingLot.API/ParkingLot.API.csproj" />
+    <Project Path="services/parkinglot-service/src/ParkingLot.Application/ParkingLot.Application.csproj" />
+    <Project Path="services/parkinglot-service/src/ParkingLot.Domain/ParkingLot.Domain.csproj" />
+    <Project Path="services/parkinglot-service/src/ParkingLot.Infrastructure/ParkingLot.Infrastructure.csproj" />
+  </Folder>
 </Solution>
