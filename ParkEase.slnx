@@ -2,7 +2,9 @@
   <Folder Name="/gateway/">
     <Project Path="gateway/ParkEase.ApiGateway/ParkEase.ApiGateway.csproj" />
   </Folder>
+
   <Folder Name="/services/" />
+
   <Folder Name="/services/auth-service/" />
   <Folder Name="/services/auth-service/src/">
     <Project Path="services/auth-service/src/Auth.API/Auth.API.csproj" />
@@ -10,11 +12,20 @@
     <Project Path="services/auth-service/src/Auth.Domain/Auth.Domain.csproj" />
     <Project Path="services/auth-service/src/Auth.Infrastructure/Auth.Infrastructure.csproj" />
   </Folder>
+
   <Folder Name="/services/parkinglot-service/" />
   <Folder Name="/services/parkinglot-service/src/">
     <Project Path="services/parkinglot-service/src/ParkingLot.API/ParkingLot.API.csproj" />
     <Project Path="services/parkinglot-service/src/ParkingLot.Application/ParkingLot.Application.csproj" />
     <Project Path="services/parkinglot-service/src/ParkingLot.Domain/ParkingLot.Domain.csproj" />
     <Project Path="services/parkinglot-service/src/ParkingLot.Infrastructure/ParkingLot.Infrastructure.csproj" />
+  </Folder>
+
+  <Folder Name="/services/spot-service/" />
+  <Folder Name="/services/spot-service/src/">
+    <Project Path="services/spot-service/src/Spot.API/Spot.API.csproj" />
+    <Project Path="services/spot-service/src/Spot.Application/Spot.Application.csproj" />
+    <Project Path="services/spot-service/src/Spot.Domain/Spot.Domain.csproj" />
+    <Project Path="services/spot-service/src/Spot.Infrastructure/Spot.Infrastructure.csproj" />
   </Folder>
 </Solution>
