@@ -119,6 +119,52 @@ services:
     networks:
       - parkease-network
 
+  payment-service:
+    build:
+      context: ./services/payment-service
+      dockerfile: Dockerfile
+    container_name: parkease-payment
+    restart: always
+    ports:
+      - "5005:5005"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:5005
+      ConnectionStrings__DefaultConnection: Host=postgres;Port=5432;Database=parkease_payment_db;Username=postgres;Password=AnaPassword
+      JwtSettings__SecretKey: ParkEase@SuperSecretKey#2026!MustBeAtLeast32Chars
+      JwtSettings__Issuer: ParkEase.Auth
+      JwtSettings__Audience: ParkEase.Client
+      JwtSettings__AccessTokenExpiryMinutes: 60
+      JwtSettings__RefreshTokenExpiryDays: 7
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - parkease-network
+
+  vehicle-service:
+    build:
+      context: ./services/vehicle-service
+      dockerfile: Dockerfile
+    container_name: parkease-vehicle
+    restart: always
+    ports:
+      - "5006:5006"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:5006
+      ConnectionStrings__DefaultConnection: Host=postgres;Port=5432;Database=parkease_vehicle_db;Username=postgres;Password=AnaPassword
+      JwtSettings__SecretKey: ParkEase@SuperSecretKey#2026!MustBeAtLeast32Chars
+      JwtSettings__Issuer: ParkEase.Auth
+      JwtSettings__Audience: ParkEase.Client
+      JwtSettings__AccessTokenExpiryMinutes: 60
+      JwtSettings__RefreshTokenExpiryDays: 7
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - parkease-network
+
 volumes:
   postgres_data:
 

@@ -20,6 +20,14 @@
     <Project Path="services/booking-service/src/Booking.Infrastructure/Booking.Infrastructure.csproj" />
   </Folder>
 
+  <Folder Name="/services/vehicle-service/" />
+  <Folder Name="/services/vehicle-service/src/">
+    <Project Path="services/vehicle-service/src/Vehicle.API/Vehicle.API.csproj" />
+    <Project Path="services/vehicle-service/src/Vehicle.Application/Vehicle.Application.csproj" />
+    <Project Path="services/vehicle-service/src/Vehicle.Domain/Vehicle.Domain.csproj" />
+    <Project Path="services/vehicle-service/src/Vehicle.Infrastructure/Vehicle.Infrastructure.csproj" />
+  </Folder>
+
   <Folder Name="/services/parkinglot-service/" />
   <Folder Name="/services/parkinglot-service/src/">
     <Project Path="services/parkinglot-service/src/ParkingLot.API/ParkingLot.API.csproj" />
