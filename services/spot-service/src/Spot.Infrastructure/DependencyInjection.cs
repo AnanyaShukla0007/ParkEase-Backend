@@ -6,24 +6,21 @@ using Spot.Application.Services;
 using ParkEase.Spot.Infrastructure.Persistence;
 using ParkEase.Spot.Infrastructure.Repositories;
 
-namespace ParkEase.Spot.Infrastructure
+namespace ParkEase.Spot.Infrastructure;
+
+public static class DependencyInjection
 {
-    public static class DependencyInjection
+    public static IServiceCollection AddSpotInfrastructure(
+        this IServiceCollection services,
+        IConfiguration configuration)
     {
-        public static IServiceCollection AddSpotInfrastructure(
-            this IServiceCollection services,
-            IConfiguration configuration)
-        {
-            var connectionString =
-                configuration.GetConnectionString("DefaultConnection");
+        services.AddDbContext<SpotDbContext>(options =>
+            options.UseNpgsql(
+                configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddDbContext<SpotDbContext>(options =>
-                options.UseNpgsql(connectionString));
+        services.AddScoped<ISpotRepository, SpotRepository>();
+        services.AddScoped<ISpotService, SpotServices>();
 
-            services.AddScoped<ISpotRepository, SpotRepository>();
-            services.AddScoped<ISpotService, SpotServices>();
-
-            return services;
-        }
+        return services;
     }
 }

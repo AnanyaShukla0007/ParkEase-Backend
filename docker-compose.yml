@@ -90,6 +90,35 @@ services:
     networks:
       - parkease-network
 
+  booking-service:
+    build:
+      context: ./services/booking-service
+      dockerfile: Dockerfile
+    container_name: parkease-booking
+    restart: always
+    ports:
+      - "5004:5004"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:5004
+      ConnectionStrings__DefaultConnection: Host=postgres;Port=5432;Database=parkease_booking_db;Username=postgres;Password=AnaPassword
+      Services__SpotUrl: http://spot-service:5003
+      Services__ParkingLotUrl: http://parkinglot-service:5002
+      JwtSettings__SecretKey: ParkEase@SuperSecretKey#2026!MustBeAtLeast32Chars
+      JwtSettings__Issuer: ParkEase.Auth
+      JwtSettings__Audience: ParkEase.Client
+      JwtSettings__AccessTokenExpiryMinutes: 60
+      JwtSettings__RefreshTokenExpiryDays: 7
+    depends_on:
+      postgres:
+        condition: service_healthy
+      parkinglot-service:
+        condition: service_started
+      spot-service:
+        condition: service_started
+    networks:
+      - parkease-network
+
 volumes:
   postgres_data:
 
