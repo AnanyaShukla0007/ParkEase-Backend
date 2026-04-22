@@ -164,7 +164,6 @@ services:
         condition: service_healthy
     networks:
       - parkease-network
-
 volumes:
   postgres_data:
 
