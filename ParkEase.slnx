@@ -1,4 +1,8 @@
 <Solution>
+  <Folder Name="/parkease-web/">
+    <Project Path="parkease-web/ParkEase.Web.csproj" />
+  </Folder>
+
   <Folder Name="/gateway/">
     <Project Path="gateway/ParkEase.ApiGateway/ParkEase.ApiGateway.csproj" />
   </Folder>

@@ -1,0 +1,24 @@
+@model LotManagerDashboardViewModel
+@{
+    ViewData["Title"] = "Manager Dashboard";
+}
+
+<h1 class="h3 mb-4">Lot Manager Dashboard</h1>
+<div class="row g-4">
+    <div class="col-md-3"><div class="card card-soft"><div class="card-body"><div class="stat">@Model.LotCount</div><div>Managed Lots</div></div></div></div>
+    <div class="col-md-3"><div class="card card-soft"><div class="card-body"><div class="stat">@Model.ActiveBookings</div><div>Active Bookings</div></div></div></div>
+    <div class="col-md-3"><div class="card card-soft"><div class="card-body"><div class="stat">@Model.AverageOccupancyRate%</div><div>Average Occupancy</div></div></div></div>
+    <div class="col-md-3"><div class="card card-soft"><div class="card-body"><div class="stat">@Model.Revenue</div><div>Revenue</div></div></div></div>
+</div>
+
+<div class="card card-soft mt-4">
+    <div class="card-body">
+        <h2 class="h5">Peak Hours</h2>
+        <ul class="mb-0">
+            @foreach (var item in Model.PeakHours)
+            {
+                <li>@item</li>
+            }
+        </ul>
+    </div>
+</div>
