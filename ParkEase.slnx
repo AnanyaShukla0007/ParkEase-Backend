@@ -36,6 +36,14 @@
     <Project Path="services/vehicle-service/src/Vehicle.Infrastructure/Vehicle.Infrastructure.csproj" />
   </Folder>
 
+  <Folder Name="/services/notification-service/" />
+  <Folder Name="/services/notification-service/src/">
+    <Project Path="services/notification-service/src/Notification.API/Notification.API.csproj" />
+    <Project Path="services/notification-service/src/Notification.Application/Notification.Application.csproj" />
+    <Project Path="services/notification-service/src/Notification.Domain/Notification.Domain.csproj" />
+    <Project Path="services/notification-service/src/Notification.Infrastructure/Notification.Infrastructure.csproj" />
+  </Folder>
+
   <Folder Name="/services/parkinglot-service/" />
   <Folder Name="/services/parkinglot-service/src/">
     <Project Path="services/parkinglot-service/src/ParkingLot.API/ParkingLot.API.csproj" />

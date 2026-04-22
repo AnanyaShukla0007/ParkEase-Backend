@@ -30,6 +30,12 @@
         "Match": {
           "Path": "/api/v1/vehicles/{**catch-all}"
         }
+      },
+      "notification-route": {
+        "ClusterId": "notification-cluster",
+        "Match": {
+          "Path": "/api/v1/notifications/{**catch-all}"
+        }
       }
     },
     "Clusters": {
@@ -65,6 +71,13 @@
         "Destinations": {
           "vehicle-destination": {
             "Address": "http://localhost:5006/"
+          }
+        }
+      },
+      "notification-cluster": {
+        "Destinations": {
+          "notification-destination": {
+            "Address": "http://localhost:5007/"
           }
         }
       }
