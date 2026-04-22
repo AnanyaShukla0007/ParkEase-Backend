@@ -78,6 +78,34 @@ public class BookingsController : ControllerBase
     }
 
     /// <summary>
+    /// Get the user's last parked location.
+    /// </summary>
+    /// <remarks>
+    /// Role: Driver / Admin
+    /// Returns the driver's latest checked-in parking memory for My Parking / Last Parked UI.
+    /// </remarks>
+    [HttpGet("user/{userId:int}/last-parked")]
+    public async Task<IActionResult> GetLastParked(int userId)
+    {
+        var result = await _bookingService.GetLastParkedAsync(userId);
+
+        if (result is null)
+        {
+            return NotFound(new
+            {
+                success = false,
+                message = "No parked history found for this user."
+            });
+        }
+
+        return Ok(new
+        {
+            success = true,
+            data = result
+        });
+    }
+
+    /// <summary>
     /// Get bookings by parking lot ID.
     /// </summary>
     /// <remarks>

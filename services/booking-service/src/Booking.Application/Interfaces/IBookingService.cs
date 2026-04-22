@@ -18,4 +18,5 @@ public interface IBookingService
     Task<bool> ExtendAsync(int id, ExtendBookingRequest request);
 
     Task<FarePreviewResponse?> GetFarePreviewAsync(int id);
+    Task<LastParkedResponse?> GetLastParkedAsync(int userId);
 }

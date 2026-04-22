@@ -24,6 +24,12 @@
         "Match": {
           "Path": "/api/v1/payments/{**catch-all}"
         }
+      },
+      "vehicle-route": {
+        "ClusterId": "vehicle-cluster",
+        "Match": {
+          "Path": "/api/v1/vehicles/{**catch-all}"
+        }
       }
     },
     "Clusters": {
@@ -52,6 +58,13 @@
         "Destinations": {
           "payment-destination": {
             "Address": "http://localhost:5005/"
+          }
+        }
+      },
+      "vehicle-cluster": {
+        "Destinations": {
+          "vehicle-destination": {
+            "Address": "http://localhost:5006/"
           }
         }
       }

@@ -1,3 +1,5 @@
+using System.Net.Http.Json;
+using Booking.Application.DTOs.Responses;
 using Booking.Application.Interfaces;
 
 namespace Booking.Infrastructure.Clients;
@@ -25,5 +27,11 @@ public class ParkingLotClient : IParkingLotClient
             $"/api/v1/parkinglots/{lotId}/increment-available", null);
 
         return response.IsSuccessStatusCode;
+    }
+
+    public async Task<ParkingLotLookupResponse?> GetParkingLotByIdAsync(int lotId)
+    {
+        return await _httpClient.GetFromJsonAsync<ParkingLotLookupResponse>(
+            $"/api/v1/parkinglots/{lotId}");
     }
 }

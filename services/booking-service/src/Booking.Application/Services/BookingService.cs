@@ -263,4 +263,35 @@ public class BookingService : IBookingService
             FinalAmount = decimal.Round(finalAmount, 2)
         };
     }
+
+    public async Task<LastParkedResponse?> GetLastParkedAsync(int userId)
+    {
+        var bookings = await _bookingRepository.GetByUserIdAsync(userId);
+
+        var booking = bookings
+            .Where(x => x.CheckInTimeUtc.HasValue)
+            .OrderByDescending(x => x.CheckInTimeUtc)
+            .ThenByDescending(x => x.CreatedAtUtc)
+            .FirstOrDefault();
+
+        if (booking is null)
+            return null;
+
+        var lot = await _parkingLotClient.GetParkingLotByIdAsync(booking.LotId);
+        var spot = await _spotClient.GetSpotByIdAsync(booking.SpotId);
+
+        return new LastParkedResponse
+        {
+            BookingId = booking.Id,
+            LotId = booking.LotId,
+            SpotId = booking.SpotId,
+            LotName = lot?.Name ?? $"Lot {booking.LotId}",
+            Floor = spot?.Floor.ToString() ?? string.Empty,
+            Section = null,
+            SpotNumber = spot?.SpotNumber ?? booking.SpotId.ToString(),
+            ParkedAtUtc = booking.CheckInTimeUtc!.Value,
+            Note = string.IsNullOrWhiteSpace(booking.Notes) ? null : booking.Notes,
+            PhotoUrl = null
+        };
+    }
 }
