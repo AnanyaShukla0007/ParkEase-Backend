@@ -36,6 +36,12 @@
         "Match": {
           "Path": "/api/v1/notifications/{**catch-all}"
         }
+      },
+      "analytics-route": {
+        "ClusterId": "analytics-cluster",
+        "Match": {
+          "Path": "/api/v1/analytics/{**catch-all}"
+        }
       }
     },
     "Clusters": {
@@ -78,6 +84,13 @@
         "Destinations": {
           "notification-destination": {
             "Address": "http://localhost:5007/"
+          }
+        }
+      },
+      "analytics-cluster": {
+        "Destinations": {
+          "analytics-destination": {
+            "Address": "http://localhost:5008/"
           }
         }
       }

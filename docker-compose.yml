@@ -187,6 +187,32 @@ services:
         condition: service_healthy
     networks:
       - parkease-network
+
+  analytics-service:
+    build:
+      context: ./services/analytics-service
+      dockerfile: Dockerfile
+    container_name: parkease-analytics
+    restart: always
+    ports:
+      - "5008:5008"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:5008
+      ConnectionStrings__DefaultConnection: Host=postgres;Port=5432;Database=parkease_analytics_db;Username=postgres;Password=AnaPassword
+      Services__BookingUrl: http://booking-service:5004
+      Services__PaymentUrl: http://payment-service:5005
+      Services__AuthUrl: http://auth-service:5001
+      JwtSettings__SecretKey: ParkEase@SuperSecretKey#2026!MustBeAtLeast32Chars
+      JwtSettings__Issuer: ParkEase.Auth
+      JwtSettings__Audience: ParkEase.Client
+      JwtSettings__AccessTokenExpiryMinutes: 60
+      JwtSettings__RefreshTokenExpiryDays: 7
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - parkease-network
 volumes:
   postgres_data:
 

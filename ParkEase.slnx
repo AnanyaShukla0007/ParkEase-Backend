@@ -44,6 +44,14 @@
     <Project Path="services/notification-service/src/Notification.Infrastructure/Notification.Infrastructure.csproj" />
   </Folder>
 
+  <Folder Name="/services/analytics-service/" />
+  <Folder Name="/services/analytics-service/src/">
+    <Project Path="services/analytics-service/src/Analytics.API/Analytics.API.csproj" />
+    <Project Path="services/analytics-service/src/Analytics.Application/Analytics.Application.csproj" />
+    <Project Path="services/analytics-service/src/Analytics.Domain/Analytics.Domain.csproj" />
+    <Project Path="services/analytics-service/src/Analytics.Infrastructure/Analytics.Infrastructure.csproj" />
+  </Folder>
+
   <Folder Name="/services/parkinglot-service/" />
   <Folder Name="/services/parkinglot-service/src/">
     <Project Path="services/parkinglot-service/src/ParkingLot.API/ParkingLot.API.csproj" />
