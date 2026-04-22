@@ -106,6 +106,38 @@ public class ParkingLotsController : ControllerBase
         return Ok(new { message = "Parking lot deactivated." });
     }
 
+    /// <summary>Decrease available spot count</summary>
+    /// <remarks>Access: Internal booking workflow. Decrements available spots by one.</remarks>
+    [HttpPut("{id:int}/decrement-available")]
+    [AllowAnonymous]
+    public async Task<IActionResult> DecrementAvailable(int id)
+    {
+        var result = await _service.DecrementAvailableAsync(id);
+        return Ok(new
+        {
+            success = true,
+            message = "Parking lot availability decremented successfully.",
+            lotId = result.Id,
+            availableSpots = result.AvailableSpots
+        });
+    }
+
+    /// <summary>Increase available spot count</summary>
+    /// <remarks>Access: Internal booking workflow. Increments available spots by one.</remarks>
+    [HttpPut("{id:int}/increment-available")]
+    [AllowAnonymous]
+    public async Task<IActionResult> IncrementAvailable(int id)
+    {
+        var result = await _service.IncrementAvailableAsync(id);
+        return Ok(new
+        {
+            success = true,
+            message = "Parking lot availability incremented successfully.",
+            lotId = result.Id,
+            availableSpots = result.AvailableSpots
+        });
+    }
+
     /// <summary>Delete parking lot permanently</summary>
     /// <remarks>Access: ADMIN only</remarks>
     [HttpDelete("{id:int}")]

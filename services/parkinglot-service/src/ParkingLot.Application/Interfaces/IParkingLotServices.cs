@@ -22,5 +22,9 @@ public interface IParkingLotService
 
     Task ToggleActiveAsync(int id, bool active);
 
+    Task<ParkingLotResponse> DecrementAvailableAsync(int id);
+
+    Task<ParkingLotResponse> IncrementAvailableAsync(int id);
+
     Task DeleteAsync(int id);
 }

@@ -12,6 +12,13 @@
     <Project Path="services/auth-service/src/Auth.Domain/Auth.Domain.csproj" />
     <Project Path="services/auth-service/src/Auth.Infrastructure/Auth.Infrastructure.csproj" />
   </Folder>
+  <Folder Name="/services/booking-service/" />
+  <Folder Name="/services/booking-service/src/">
+    <Project Path="services/booking-service/src/Booking.API/Booking.API.csproj" />
+    <Project Path="services/booking-service/src/Booking.Application/Booking.Application.csproj" />
+    <Project Path="services/booking-service/src/Booking.Domain/Booking.Domain.csproj" />
+    <Project Path="services/booking-service/src/Booking.Infrastructure/Booking.Infrastructure.csproj" />
+  </Folder>
 
   <Folder Name="/services/parkinglot-service/" />
   <Folder Name="/services/parkinglot-service/src/">

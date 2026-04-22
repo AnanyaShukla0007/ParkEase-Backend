@@ -1,6 +1,7 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using ParkEase.Spot.Infrastructure;
@@ -8,11 +9,29 @@ using ParkEase.Spot.Infrastructure.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// FORCE config loading
+builder.Configuration
+    .SetBasePath(Directory.GetCurrentDirectory())
+    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+    .AddJsonFile(
+        $"appsettings.{builder.Environment.EnvironmentName}.json",
+        optional: true,
+        reloadOnChange: true)
+    .AddEnvironmentVariables();
+
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
-var jwt = builder.Configuration.GetSection("JwtSettings");
-var key = Encoding.UTF8.GetBytes(jwt["SecretKey"]!);
+var secretKey = builder.Configuration["JwtSettings:SecretKey"]
+    ?? throw new Exception("JwtSettings:SecretKey missing in appsettings.json");
+
+var issuer = builder.Configuration["JwtSettings:Issuer"]
+    ?? throw new Exception("JwtSettings:Issuer missing");
+
+var audience = builder.Configuration["JwtSettings:Audience"]
+    ?? throw new Exception("JwtSettings:Audience missing");
+
+var key = Encoding.UTF8.GetBytes(secretKey);
 
 builder.Services
     .AddAuthentication(options =>
@@ -29,10 +48,10 @@ builder.Services
             IssuerSigningKey = new SymmetricSecurityKey(key),
 
             ValidateIssuer = true,
-            ValidIssuer = jwt["Issuer"],
+            ValidIssuer = issuer,
 
             ValidateAudience = true,
-            ValidAudience = jwt["Audience"],
+            ValidAudience = audience,
 
             ValidateLifetime = true,
             ClockSkew = TimeSpan.Zero
@@ -74,12 +93,6 @@ builder.Services.AddSwaggerGen(options =>
             Array.Empty<string>()
         }
     });
-
-    var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
-    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-
-    if (File.Exists(xmlPath))
-        options.IncludeXmlComments(xmlPath);
 });
 
 builder.Services.AddSpotInfrastructure(builder.Configuration);
@@ -96,27 +109,19 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
+app.UseSwagger();
+app.UseSwaggerUI(c =>
 {
-    app.UseSwagger();
-
-    app.UseSwaggerUI(c =>
-    {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Spot.API v1");
-        c.RoutePrefix = "swagger";
-    });
-}
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Spot.API v1");
+    c.RoutePrefix = "swagger";
+});
 
 app.UseCors("AllowAll");
 
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapGet("/", context =>
-{
-    context.Response.Redirect("/swagger");
-    return Task.CompletedTask;
-});
+app.MapGet("/", () => Results.Redirect("/swagger"));
 
 app.MapControllers();
 

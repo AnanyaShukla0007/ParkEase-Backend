@@ -139,6 +139,35 @@ public class ParkingLotService : IParkingLotService
         await _repo.UpdateAsync(item);
     }
 
+    public async Task<ParkingLotResponse> DecrementAvailableAsync(int id)
+    {
+        var item = await _repo.GetByIdAsync(id)
+            ?? throw new KeyNotFoundException("Parking lot not found.");
+
+        if (item.AvailableSpots <= 0)
+            throw new InvalidOperationException("No available spots left in this parking lot.");
+
+        item.AvailableSpots -= 1;
+        item.UpdatedAt = DateTime.UtcNow;
+
+        await _repo.UpdateAsync(item);
+        return Map(item);
+    }
+
+    public async Task<ParkingLotResponse> IncrementAvailableAsync(int id)
+    {
+        var item = await _repo.GetByIdAsync(id)
+            ?? throw new KeyNotFoundException("Parking lot not found.");
+
+        if (item.AvailableSpots < item.TotalSpots)
+            item.AvailableSpots += 1;
+
+        item.UpdatedAt = DateTime.UtcNow;
+
+        await _repo.UpdateAsync(item);
+        return Map(item);
+    }
+
     public async Task DeleteAsync(int id)
     {
         var item = await _repo.GetByIdAsync(id)
