@@ -1,3 +1,5 @@
+using System.Net.Http.Json;
+using Booking.Application.DTOs.Responses;
 using Booking.Application.Interfaces;
 
 namespace Booking.Infrastructure.Clients;
@@ -33,5 +35,11 @@ public class SpotClient : ISpotClient
             $"/api/v1/spots/{spotId}/release", null);
 
         return response.IsSuccessStatusCode;
+    }
+
+    public async Task<SpotLookupResponse?> GetSpotByIdAsync(int spotId)
+    {
+        return await _httpClient.GetFromJsonAsync<SpotLookupResponse>(
+            $"/api/v1/spots/{spotId}");
     }
 }
