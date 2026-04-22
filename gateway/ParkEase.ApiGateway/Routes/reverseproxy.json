@@ -18,6 +18,12 @@
         "Match": {
           "Path": "/api/v1/spots/{**catch-all}"
         }
+      },
+      "payment-route": {
+        "ClusterId": "payment-cluster",
+        "Match": {
+          "Path": "/api/v1/payments/{**catch-all}"
+        }
       }
     },
     "Clusters": {
@@ -39,6 +45,13 @@
         "Destinations": {
           "spot-destination": {
             "Address": "http://localhost:5003/"
+          }
+        }
+      },
+      "payment-cluster": {
+        "Destinations": {
+          "payment-destination": {
+            "Address": "http://localhost:5005/"
           }
         }
       }
