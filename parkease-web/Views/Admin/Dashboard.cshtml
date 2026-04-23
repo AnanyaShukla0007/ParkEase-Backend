@@ -1,0 +1,52 @@
+@model AdminDashboardViewModel
+@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<h1 class="h3 mb-4">Admin Dashboard</h1>
+<div class="row g-4">
+    <div class="col-md-3"><div class="card card-soft"><div class="card-body"><div class="stat">@Model.TotalUsers</div><div>Total Users</div></div></div></div>
+    <div class="col-md-3"><div class="card card-soft"><div class="card-body"><div class="stat">@Model.PlatformSummary.TotalLots</div><div>Total Lots</div></div></div></div>
+    <div class="col-md-3"><div class="card card-soft"><div class="card-body"><div class="stat">@Model.PlatformSummary.TotalRevenue</div><div>Platform Revenue</div></div></div></div>
+    <div class="col-md-3"><div class="card card-soft"><div class="card-body"><div class="stat">@Model.PendingBroadcasts</div><div>Pending Broadcasts</div></div></div></div>
+</div>
+
+<div class="row g-4 mt-1">
+    <div class="col-lg-7">
+        <div class="card card-soft">
+            <div class="card-body">
+                <h2 class="h5">Silent Demand Heatmap</h2>
+                <div class="table-responsive">
+                    <table class="table mb-0">
+                        <thead><tr><th>City</th><th>Events</th><th>No Results</th><th>Full Lots</th><th>Abandoned</th></tr></thead>
+                        <tbody>
+                        @foreach (var item in Model.DemandHeatmap)
+                        {
+                            <tr>
+                                <td>@item.City</td>
+                                <td>@item.EventCount</td>
+                                <td>@item.NoResultCount</td>
+                                <td>@item.FullLotCount</td>
+                                <td>@item.AbandonedSearchCount</td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-5">
+        <div class="card card-soft">
+            <div class="card-body">
+                <h2 class="h5">Peak Failed Hours</h2>
+                <ul class="mb-0">
+                    @foreach (var item in Model.FailedHours)
+                    {
+                        <li>@item.Hour:00 - @item.Count failed searches</li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

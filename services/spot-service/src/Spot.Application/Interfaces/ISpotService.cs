@@ -9,6 +9,9 @@ public interface ISpotService
     Task<List<SpotResponse>> GetByLotAsync(int lotId);
     Task<List<SpotResponse>> GetAvailableByLotAsync(int lotId);
     Task<SpotResponse> CreateAsync(CreateSpotRequest request);
+    Task<List<SpotResponse>> BulkCreateAsync(BulkCreateSpotRequest request);
+    Task<SpotResponse?> UpdateAsync(int id, UpdateSpotRequest request);
+    Task<bool> DeleteAsync(int id);
 
     Task<SpotResponse?> ReserveAsync(int id);
     Task<SpotResponse?> OccupyAsync(int id);

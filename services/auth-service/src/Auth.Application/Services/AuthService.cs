@@ -96,6 +96,12 @@ public class AuthService : IAuthService
         return Map(user);
     }
 
+    public async Task<bool> UserExistsAsync(int userId)
+        => await _users.FindByIdAsync(userId) is not null;
+
+    public async Task<int> GetUserCountAsync()
+        => (await _users.GetAllAsync()).Count;
+
     public async Task<List<UserResponse>> GetAllUsersAsync()
     {
         var users = await _users.GetAllAsync();

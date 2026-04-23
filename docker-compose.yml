@@ -202,6 +202,7 @@ services:
       ConnectionStrings__DefaultConnection: Host=postgres;Port=5432;Database=parkease_analytics_db;Username=postgres;Password=AnaPassword
       Services__BookingUrl: http://booking-service:5004
       Services__PaymentUrl: http://payment-service:5005
+      Services__SpotUrl: http://spot-service:5003
       Services__AuthUrl: http://auth-service:5001
       JwtSettings__SecretKey: ParkEase@SuperSecretKey#2026!MustBeAtLeast32Chars
       JwtSettings__Issuer: ParkEase.Auth
@@ -211,6 +212,45 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+    networks:
+      - parkease-network
+
+  parkease-web:
+    build:
+      context: ./parkease-web
+      dockerfile: Dockerfile
+    container_name: parkease-web
+    restart: always
+    ports:
+      - "5010:5010"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:5010
+      Services__Auth: http://auth-service:5001
+      Services__ParkingLot: http://parkinglot-service:5002
+      Services__Spot: http://spot-service:5003
+      Services__Booking: http://booking-service:5004
+      Services__Payment: http://payment-service:5005
+      Services__Vehicle: http://vehicle-service:5006
+      Services__Notification: http://notification-service:5007
+      Services__Analytics: http://analytics-service:5008
+    depends_on:
+      auth-service:
+        condition: service_started
+      parkinglot-service:
+        condition: service_started
+      spot-service:
+        condition: service_started
+      booking-service:
+        condition: service_started
+      payment-service:
+        condition: service_started
+      vehicle-service:
+        condition: service_started
+      notification-service:
+        condition: service_started
+      analytics-service:
+        condition: service_started
     networks:
       - parkease-network
 volumes:
