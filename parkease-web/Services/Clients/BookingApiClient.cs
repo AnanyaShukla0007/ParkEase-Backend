@@ -11,7 +11,9 @@ public class BookingApiClient : IBookingApiClient
         _httpClient = httpClient;
     }
 
-    public Task<int> GetBookingCountAsync(int userId) => Task.FromResult(12);
+    public Task<int> GetBookingCountAsync(int userId) =>
+        ApiResponseHelper.CountDataArrayAsync(_httpClient, $"/api/v1/bookings/user/{userId}");
 
-    public Task<int> GetActiveBookingCountAsync() => Task.FromResult(9);
+    public Task<int> GetActiveBookingCountAsync() =>
+        ApiResponseHelper.CountDataArrayAsync(_httpClient, "/api/v1/bookings/all");
 }

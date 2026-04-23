@@ -7,5 +7,6 @@ public interface IBookingAnalyticsClient
     Task<int> GetOverstayCountAsync(int userId);
     Task<int> GetOnTimeExitCountAsync(int userId);
     Task<decimal> GetAverageDurationByLotAsync(int lotId);
-    Task<int> GetSpotUsageCountAsync(int lotId, string spotType);
+    Task<List<Analytics.Application.DTOs.AnalyticsBookingSnapshot>> GetBookingsByLotAsync(int lotId);
+    Task<List<Analytics.Application.DTOs.AnalyticsBookingSnapshot>> GetBookingsByUserAsync(int userId);
 }

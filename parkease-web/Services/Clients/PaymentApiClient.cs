@@ -11,5 +11,6 @@ public class PaymentApiClient : IPaymentApiClient
         _httpClient = httpClient;
     }
 
-    public Task<int> GetPaymentCountAsync(int userId) => Task.FromResult(8);
+    public Task<int> GetPaymentCountAsync(int userId) =>
+        ApiResponseHelper.CountDataArrayAsync(_httpClient, $"/api/v1/payments/user/{userId}");
 }

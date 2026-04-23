@@ -11,5 +11,6 @@ public class SpotApiClient : ISpotApiClient
         _httpClient = httpClient;
     }
 
-    public Task<int> GetAvailableSpotCountAsync(int lotId) => Task.FromResult(26);
+    public Task<int> GetAvailableSpotCountAsync(int lotId) =>
+        ApiResponseHelper.CountDataArrayAsync(_httpClient, $"/api/v1/spots/lot/{lotId}/available");
 }

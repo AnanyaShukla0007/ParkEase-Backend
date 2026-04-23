@@ -134,6 +134,26 @@ public class AuthController : ControllerBase
     public async Task<IActionResult> GetAllUsers()
         => Ok(await _service.GetAllUsersAsync());
 
+    /// <summary>Get total user count</summary>
+    /// <remarks>
+    /// Internal dashboard/statistics endpoint. Returns total users across the platform.
+    /// </remarks>
+    [HttpGet("users/count")]
+    [AllowAnonymous]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetUserCount()
+        => Ok(new { count = await _service.GetUserCountAsync() });
+
+    /// <summary>Check whether a user exists</summary>
+    /// <remarks>
+    /// Internal analytics endpoint. Returns whether the given user exists.
+    /// </remarks>
+    [HttpGet("users/{userId:int}/exists")]
+    [AllowAnonymous]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> UserExists(int userId)
+        => Ok(new { exists = await _service.UserExistsAsync(userId) });
+
     /// <summary>Get users by role</summary>
     /// <remarks>
     /// ADMIN only endpoint. Returns users filtered by role:

@@ -11,5 +11,5 @@ public class ParkingLotApiClient : IParkingLotApiClient
         _httpClient = httpClient;
     }
 
-    public Task<int> GetManagedLotCountAsync() => Task.FromResult(4);
+    public Task<int> GetManagedLotCountAsync() => ApiResponseHelper.CountDataArrayAsync(_httpClient, "/api/v1/parkinglots");
 }

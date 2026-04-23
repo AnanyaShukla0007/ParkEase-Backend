@@ -1,3 +1,4 @@
+using System.Text.Json;
 using ParkEase.Web.Services.Interfaces;
 
 namespace ParkEase.Web.Services.Clients;
@@ -11,7 +12,14 @@ public class NotificationApiClient : INotificationApiClient
         _httpClient = httpClient;
     }
 
-    public Task<int> GetUnreadCountAsync(int recipientId) => Task.FromResult(5);
+    public async Task<int> GetUnreadCountAsync(int recipientId)
+    {
+        var data = await ApiResponseHelper.GetDataAsync(_httpClient, $"/api/v1/notifications/recipient/{recipientId}/unread-count");
+        return data.HasValue && data.Value.ValueKind == JsonValueKind.Number
+            ? data.Value.GetInt32()
+            : 0;
+    }
 
-    public Task<int> GetAdminBroadcastCountAsync() => Task.FromResult(2);
+    public Task<int> GetAdminBroadcastCountAsync() =>
+        ApiResponseHelper.CountDataArrayAsync(_httpClient, "/api/v1/notifications/all");
 }

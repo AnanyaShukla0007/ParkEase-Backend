@@ -162,41 +162,67 @@ public class SpotsController : ControllerBase
     }
 
     /// <summary>Bulk create parking spots</summary>
-    /// <remarks>Access: MANAGER, ADMIN. Reserved for future bulk creation feature.</remarks>
+    /// <remarks>Access: MANAGER, ADMIN. Creates multiple parking spots for a lot in one request.</remarks>
     [HttpPost("bulk")]
     [Authorize(Roles = "MANAGER,ADMIN")]
-    public IActionResult BulkCreate()
+    public async Task<IActionResult> BulkCreate([FromBody] BulkCreateSpotRequest request)
     {
-        return StatusCode(501, new
+        var result = await _service.BulkCreateAsync(request);
+
+        return Ok(new
         {
-            success = false,
-            message = "Bulk create feature not implemented yet."
+            success = true,
+            message = "Spots created successfully.",
+            data = result
         });
     }
 
     /// <summary>Update parking spot</summary>
-    /// <remarks>Access: MANAGER, ADMIN. Reserved for future spot update feature.</remarks>
+    /// <remarks>Access: MANAGER, ADMIN. Updates an existing parking spot.</remarks>
     [HttpPut("{id:int}")]
     [Authorize(Roles = "MANAGER,ADMIN")]
-    public IActionResult Update(int id)
+    public async Task<IActionResult> Update(int id, [FromBody] UpdateSpotRequest request)
     {
-        return StatusCode(501, new
+        var result = await _service.UpdateAsync(id, request);
+
+        if (result == null)
         {
-            success = false,
-            message = "Update feature not implemented yet."
+            return NotFound(new
+            {
+                success = false,
+                message = "Spot not found."
+            });
+        }
+
+        return Ok(new
+        {
+            success = true,
+            message = "Spot updated successfully.",
+            data = result
         });
     }
 
     /// <summary>Delete parking spot permanently</summary>
-    /// <remarks>Access: ADMIN only. Reserved for future delete feature.</remarks>
+    /// <remarks>Access: ADMIN only. Deletes a parking spot permanently.</remarks>
     [HttpDelete("{id:int}")]
     [Authorize(Roles = "ADMIN")]
-    public IActionResult Delete(int id)
+    public async Task<IActionResult> Delete(int id)
     {
-        return StatusCode(501, new
+        var ok = await _service.DeleteAsync(id);
+
+        if (!ok)
         {
-            success = false,
-            message = "Delete feature not implemented yet."
+            return NotFound(new
+            {
+                success = false,
+                message = "Spot not found."
+            });
+        }
+
+        return Ok(new
+        {
+            success = true,
+            message = "Spot deleted successfully."
         });
     }
 }

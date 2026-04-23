@@ -14,6 +14,10 @@ public interface IAuthService
 
     Task<UserResponse> GetUserByIdAsync(int userId);
 
+    Task<bool> UserExistsAsync(int userId);
+
+    Task<int> GetUserCountAsync();
+
     Task<List<UserResponse>> GetAllUsersAsync();
 
     Task<List<UserResponse>> GetUsersByRoleAsync(string role);

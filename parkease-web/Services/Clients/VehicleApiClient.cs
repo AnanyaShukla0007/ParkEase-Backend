@@ -11,5 +11,6 @@ public class VehicleApiClient : IVehicleApiClient
         _httpClient = httpClient;
     }
 
-    public Task<int> GetVehicleCountAsync(int ownerId) => Task.FromResult(3);
+    public Task<int> GetVehicleCountAsync(int ownerId) =>
+        ApiResponseHelper.CountDataArrayAsync(_httpClient, $"/api/v1/vehicles/owner/{ownerId}");
 }

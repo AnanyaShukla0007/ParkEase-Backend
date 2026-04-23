@@ -12,6 +12,7 @@ public class AnalyticsService : IAnalyticsService
     private readonly IBookingAnalyticsClient _bookingClient;
     private readonly IPaymentAnalyticsClient _paymentClient;
     private readonly IAuthAnalyticsClient _authClient;
+    private readonly ISpotAnalyticsClient _spotClient;
     private readonly IConfiguration _configuration;
 
     public AnalyticsService(
@@ -19,12 +20,14 @@ public class AnalyticsService : IAnalyticsService
         IBookingAnalyticsClient bookingClient,
         IPaymentAnalyticsClient paymentClient,
         IAuthAnalyticsClient authClient,
+        ISpotAnalyticsClient spotClient,
         IConfiguration configuration)
     {
         _analyticsRepository = analyticsRepository;
         _bookingClient = bookingClient;
         _paymentClient = paymentClient;
         _authClient = authClient;
+        _spotClient = spotClient;
         _configuration = configuration;
     }
 
@@ -85,10 +88,24 @@ public class AnalyticsService : IAnalyticsService
 
     public async Task<RevenueSummaryResponse> GetRevenueByLotAsync(int lotId, DateTime? from, DateTime? to)
     {
+        var targetFrom = from ?? DateTime.MinValue;
+        var targetTo = to ?? DateTime.MaxValue;
+        var bookings = await _bookingClient.GetBookingsByLotAsync(lotId);
+        decimal totalRevenue = 0;
+
+        foreach (var booking in bookings)
+        {
+            var payments = await _paymentClient.GetPaymentsByBookingAsync(booking.Id);
+            totalRevenue += payments
+                .Where(x => x.Status == 2)
+                .Where(x => (x.PaidAtUtc ?? x.CreatedAtUtc) >= targetFrom && (x.PaidAtUtc ?? x.CreatedAtUtc) <= targetTo)
+                .Sum(x => x.Amount);
+        }
+
         return new RevenueSummaryResponse
         {
             LotId = lotId,
-            TotalRevenue = await _paymentClient.GetRevenueByLotAsync(lotId, from, to),
+            TotalRevenue = decimal.Round(totalRevenue, 2),
             From = from,
             To = to
         };
@@ -96,28 +113,43 @@ public class AnalyticsService : IAnalyticsService
 
     public async Task<List<RevenueByDayResponse>> GetRevenueByDayAsync(int lotId, DateTime? from, DateTime? to)
     {
-        var items = await _paymentClient.GetRevenueByDayAsync(lotId, from, to);
-        return items
-            .Select(x => new RevenueByDayResponse { Day = x.Day, Revenue = x.Revenue })
+        var targetFrom = from ?? DateTime.MinValue;
+        var targetTo = to ?? DateTime.MaxValue;
+        var bookings = await _bookingClient.GetBookingsByLotAsync(lotId);
+        var payments = new List<AnalyticsPaymentSnapshot>();
+
+        foreach (var booking in bookings)
+            payments.AddRange(await _paymentClient.GetPaymentsByBookingAsync(booking.Id));
+
+        return payments
+            .Where(x => x.Status == 2)
+            .Select(x => new { Day = (x.PaidAtUtc ?? x.CreatedAtUtc).Date, x.Amount })
+            .Where(x => x.Day >= targetFrom.Date && x.Day <= targetTo.Date)
+            .GroupBy(x => x.Day)
+            .Select(g => new RevenueByDayResponse { Day = g.Key, Revenue = decimal.Round(g.Sum(x => x.Amount), 2) })
             .OrderBy(x => x.Day)
             .ToList();
     }
 
     public async Task<List<SpotTypeUsageResponse>> GetMostUsedSpotTypesAsync(int lotId)
     {
-        var spotTypes = new[] { "Standard", "Compact", "Large", "EV", "Handicapped" };
-        var result = new List<SpotTypeUsageResponse>();
+        var bookings = await _bookingClient.GetBookingsByLotAsync(lotId);
+        var usage = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
 
-        foreach (var item in spotTypes)
+        foreach (var booking in bookings)
         {
-            result.Add(new SpotTypeUsageResponse
-            {
-                SpotType = item,
-                Count = await _bookingClient.GetSpotUsageCountAsync(lotId, item)
-            });
+            var spotType = await _spotClient.GetSpotTypeAsync(booking.SpotId) ?? "Unknown";
+            usage[spotType] = usage.TryGetValue(spotType, out var count) ? count + 1 : 1;
         }
 
-        return result.OrderByDescending(x => x.Count).ToList();
+        return usage
+            .Select(x => new SpotTypeUsageResponse
+            {
+                SpotType = x.Key,
+                Count = x.Value
+            })
+            .OrderByDescending(x => x.Count)
+            .ToList();
     }
 
     public Task<decimal> GetAvgDurationAsync(int lotId)
@@ -132,7 +164,7 @@ public class AnalyticsService : IAnalyticsService
 
         foreach (var lotId in lotIds)
         {
-            totalRevenue += await _paymentClient.GetRevenueByLotAsync(lotId, null, null);
+            totalRevenue += (await GetRevenueByLotAsync(lotId, null, null)).TotalRevenue;
             avgOcc += await _analyticsRepository.AvgOccupancyByLotIdAsync(lotId);
             totalLogsToday += await _analyticsRepository.CountByLotIdTodayAsync(lotId);
         }

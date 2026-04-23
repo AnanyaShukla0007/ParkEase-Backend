@@ -29,6 +29,11 @@ public static class DependencyInjection
             client.BaseAddress = new Uri(configuration["Services:PaymentUrl"]!);
         });
 
+        services.AddHttpClient<ISpotAnalyticsClient, SpotAnalyticsClient>(client =>
+        {
+            client.BaseAddress = new Uri(configuration["Services:SpotUrl"]!);
+        });
+
         services.AddHttpClient<IAuthAnalyticsClient, AuthAnalyticsClient>(client =>
         {
             client.BaseAddress = new Uri(configuration["Services:AuthUrl"]!);
