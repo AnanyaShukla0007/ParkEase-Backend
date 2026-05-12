@@ -5,7 +5,7 @@ using Microsoft.OpenApi.Models;
 using ParkingLot.API.Extensions;
 using ParkingLot.API.Middlewares;
 using ParkingLot.Infrastructure;
-
+Environment.SetEnvironmentVariable("DOTNET_HOSTBUILDER__RELOADCONFIGONCHANGE", "false");
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
