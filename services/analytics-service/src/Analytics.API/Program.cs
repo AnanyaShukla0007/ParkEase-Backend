@@ -62,7 +62,9 @@ app.MapControllers();
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AnalyticsDbContext>();
-    await db.Database.EnsureCreatedAsync();
+
+    await db.Database.MigrateAsync();
+
     await AnalyticsSeeder.SeedAsync(db);
 }
 
