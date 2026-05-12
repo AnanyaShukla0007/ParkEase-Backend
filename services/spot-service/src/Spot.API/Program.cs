@@ -6,7 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using ParkEase.Spot.Infrastructure;
 using ParkEase.Spot.Infrastructure.Persistence;
-
+Environment.SetEnvironmentVariable("DOTNET_HOSTBUILDER__RELOADCONFIGONCHANGE", "false");
 var builder = WebApplication.CreateBuilder(args);
 
 // FORCE config loading

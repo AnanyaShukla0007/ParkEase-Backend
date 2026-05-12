@@ -6,7 +6,7 @@ using Vehicle.API.Extensions;
 using Vehicle.API.Middlewares;
 using Vehicle.Infrastructure.Persistence;
 using Vehicle.Infrastructure.Persistence.Seed;
-
+Environment.SetEnvironmentVariable("DOTNET_HOSTBUILDER__RELOADCONFIGONCHANGE", "false");
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();

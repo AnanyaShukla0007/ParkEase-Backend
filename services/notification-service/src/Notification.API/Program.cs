@@ -7,7 +7,7 @@ using Notification.API.Hubs;
 using Notification.API.Middlewares;
 using Notification.Infrastructure.Persistence;
 using Notification.Infrastructure.Persistence.Seed;
-
+Environment.SetEnvironmentVariable("DOTNET_HOSTBUILDER__RELOADCONFIGONCHANGE", "false");
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();

@@ -6,7 +6,7 @@ using Analytics.API.Extensions;
 using Analytics.API.Middlewares;
 using Analytics.Infrastructure.Persistence;
 using Analytics.Infrastructure.Persistence.Seed;
-
+Environment.SetEnvironmentVariable("DOTNET_HOSTBUILDER__RELOADCONFIGONCHANGE", "false");
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
