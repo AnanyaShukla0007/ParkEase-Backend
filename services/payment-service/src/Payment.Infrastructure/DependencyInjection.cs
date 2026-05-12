@@ -15,7 +15,8 @@ public static class DependencyInjection
     {
         services.AddDbContext<PaymentDbContext>(options =>
             options.UseNpgsql(
-                configuration.GetConnectionString("DefaultConnection")));
+                configuration.GetConnectionString("DefaultConnection"),
+                b => b.MigrationsAssembly("Payment.Infrastructure")));
 
         services.AddScoped<IPaymentRepository, PaymentRepository>();
 
