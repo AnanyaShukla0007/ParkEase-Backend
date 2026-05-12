@@ -1,0 +1,13 @@
+@model ProfileViewModel
+@{
+    ViewData["Title"] = "Profile";
+}
+
+<div class="card card-soft">
+    <div class="card-body p-4">
+        <h2 class="h4 mb-3">Profile</h2>
+        <p><strong>Name:</strong> @Model.Name</p>
+        <p><strong>Email:</strong> @Model.Email</p>
+        <p><strong>Role:</strong> @Model.Role</p>
+    </div>
+</div>

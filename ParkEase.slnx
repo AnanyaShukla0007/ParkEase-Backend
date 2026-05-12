@@ -1,0 +1,74 @@
+<Solution>
+  <Folder Name="/parkease-web/">
+    <Project Path="parkease-web/ParkEase.Web.csproj" />
+  </Folder>
+
+  <Folder Name="/gateway/">
+    <Project Path="gateway/ParkEase.ApiGateway/ParkEase.ApiGateway.csproj" />
+  </Folder>
+
+  <Folder Name="/services/" />
+
+  <Folder Name="/services/auth-service/" />
+  <Folder Name="/services/auth-service/src/">
+    <Project Path="services/auth-service/src/Auth.API/Auth.API.csproj" />
+    <Project Path="services/auth-service/src/Auth.Application/Auth.Application.csproj" />
+    <Project Path="services/auth-service/src/Auth.Domain/Auth.Domain.csproj" />
+    <Project Path="services/auth-service/src/Auth.Infrastructure/Auth.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/services/booking-service/" />
+  <Folder Name="/services/booking-service/src/">
+    <Project Path="services/booking-service/src/Booking.API/Booking.API.csproj" />
+    <Project Path="services/booking-service/src/Booking.Application/Booking.Application.csproj" />
+    <Project Path="services/booking-service/src/Booking.Domain/Booking.Domain.csproj" />
+    <Project Path="services/booking-service/src/Booking.Infrastructure/Booking.Infrastructure.csproj" />
+  </Folder>
+
+  <Folder Name="/services/payment-service/" />
+  <Folder Name="/services/payment-service/src/">
+    <Project Path="services/payment-service/src/Payment.API/Payment.API.csproj" />
+    <Project Path="services/payment-service/src/Payment.Application/Payment.Application.csproj" />
+    <Project Path="services/payment-service/src/Payment.Domain/Payment.Domain.csproj" />
+    <Project Path="services/payment-service/src/Payment.Infrastructure/Payment.Infrastructure.csproj" />
+  </Folder>
+
+  <Folder Name="/services/vehicle-service/" />
+  <Folder Name="/services/vehicle-service/src/">
+    <Project Path="services/vehicle-service/src/Vehicle.API/Vehicle.API.csproj" />
+    <Project Path="services/vehicle-service/src/Vehicle.Application/Vehicle.Application.csproj" />
+    <Project Path="services/vehicle-service/src/Vehicle.Domain/Vehicle.Domain.csproj" />
+    <Project Path="services/vehicle-service/src/Vehicle.Infrastructure/Vehicle.Infrastructure.csproj" />
+  </Folder>
+
+  <Folder Name="/services/notification-service/" />
+  <Folder Name="/services/notification-service/src/">
+    <Project Path="services/notification-service/src/Notification.API/Notification.API.csproj" />
+    <Project Path="services/notification-service/src/Notification.Application/Notification.Application.csproj" />
+    <Project Path="services/notification-service/src/Notification.Domain/Notification.Domain.csproj" />
+    <Project Path="services/notification-service/src/Notification.Infrastructure/Notification.Infrastructure.csproj" />
+  </Folder>
+
+  <Folder Name="/services/analytics-service/" />
+  <Folder Name="/services/analytics-service/src/">
+    <Project Path="services/analytics-service/src/Analytics.API/Analytics.API.csproj" />
+    <Project Path="services/analytics-service/src/Analytics.Application/Analytics.Application.csproj" />
+    <Project Path="services/analytics-service/src/Analytics.Domain/Analytics.Domain.csproj" />
+    <Project Path="services/analytics-service/src/Analytics.Infrastructure/Analytics.Infrastructure.csproj" />
+  </Folder>
+
+  <Folder Name="/services/parkinglot-service/" />
+  <Folder Name="/services/parkinglot-service/src/">
+    <Project Path="services/parkinglot-service/src/ParkingLot.API/ParkingLot.API.csproj" />
+    <Project Path="services/parkinglot-service/src/ParkingLot.Application/ParkingLot.Application.csproj" />
+    <Project Path="services/parkinglot-service/src/ParkingLot.Domain/ParkingLot.Domain.csproj" />
+    <Project Path="services/parkinglot-service/src/ParkingLot.Infrastructure/ParkingLot.Infrastructure.csproj" />
+  </Folder>
+
+  <Folder Name="/services/spot-service/" />
+  <Folder Name="/services/spot-service/src/">
+    <Project Path="services/spot-service/src/Spot.API/Spot.API.csproj" />
+    <Project Path="services/spot-service/src/Spot.Application/Spot.Application.csproj" />
+    <Project Path="services/spot-service/src/Spot.Domain/Spot.Domain.csproj" />
+    <Project Path="services/spot-service/src/Spot.Infrastructure/Spot.Infrastructure.csproj" />
+  </Folder>
+</Solution>

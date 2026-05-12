@@ -1,0 +1,26 @@
+@model LandingPageViewModel
+@{
+    ViewData["Title"] = "Home";
+}
+
+<section class="hero p-5 mb-4">
+    <h1 class="display-5 fw-bold">@Model.Title</h1>
+    <p class="lead mb-4">The MVC integration layer for all ParkEase backend services.</p>
+    <div class="d-flex gap-2">
+        <a class="btn btn-light" asp-controller="Driver" asp-action="Dashboard">Driver Dashboard</a>
+        <a class="btn btn-outline-light" asp-controller="Admin" asp-action="Dashboard">Admin Insights</a>
+    </div>
+</section>
+
+<div class="row g-4">
+    @foreach (var item in Model.Highlights)
+    {
+        <div class="col-md-6">
+            <div class="card card-soft h-100">
+                <div class="card-body">
+                    <p class="mb-0">@item</p>
+                </div>
+            </div>
+        </div>
+    }
+</div>

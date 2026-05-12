@@ -1,0 +1,14 @@
+@model DriverDashboardViewModel
+@{
+    ViewData["Title"] = "Driver Dashboard";
+}
+
+<h1 class="h3 mb-4">Driver Dashboard</h1>
+<div class="row g-4">
+    <div class="col-md-4"><div class="card card-soft"><div class="card-body"><div class="stat">@Model.VehicleCount</div><div>Registered Vehicles</div></div></div></div>
+    <div class="col-md-4"><div class="card card-soft"><div class="card-body"><div class="stat">@Model.BookingCount</div><div>Bookings</div></div></div></div>
+    <div class="col-md-4"><div class="card card-soft"><div class="card-body"><div class="stat">@Model.PaymentCount</div><div>Payments</div></div></div></div>
+    <div class="col-md-4"><div class="card card-soft"><div class="card-body"><div class="stat">@Model.UnreadNotifications</div><div>Unread Notifications</div></div></div></div>
+    <div class="col-md-4"><div class="card card-soft"><div class="card-body"><div class="stat">@Model.TrustScore</div><div>Trust Score</div></div></div></div>
+    <div class="col-md-4"><div class="card card-soft"><div class="card-body"><div class="stat">@Model.CarbonSavings</div><div>CO2 Reduced (kg)</div></div></div></div>
+</div>
