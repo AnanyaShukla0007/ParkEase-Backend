@@ -65,7 +65,9 @@ app.MapHub<NotificationHub>("/hubs/notifications");
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<NotificationDbContext>();
-    await db.Database.EnsureCreatedAsync();
+
+    await db.Database.MigrateAsync();
+
     await NotificationSeeder.SeedAsync(db);
 }
 

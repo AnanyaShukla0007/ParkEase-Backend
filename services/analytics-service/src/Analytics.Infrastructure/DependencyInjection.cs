@@ -15,7 +15,8 @@ public static class DependencyInjection
         IConfiguration configuration)
     {
         services.AddDbContext<AnalyticsDbContext>(options =>
-            options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
+            options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"),
+             b => b.MigrationsAssembly("Analytics.Infrastructure")));
 
         services.AddScoped<IAnalyticsRepository, AnalyticsRepository>();
 

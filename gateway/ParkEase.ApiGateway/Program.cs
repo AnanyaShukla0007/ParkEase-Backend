@@ -5,9 +5,9 @@ using Serilog;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Configuration
-    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-    .AddJsonFile("appsettings.Development.json", optional: true, reloadOnChange: true)
-    .AddJsonFile("Routes/reverseproxy.json", optional: false, reloadOnChange: true)
+    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: false)
+    .AddJsonFile("appsettings.Development.json", optional: true, reloadOnChange: false)
+    .AddJsonFile("Routes/reverseproxy.json", optional: false, reloadOnChange: false)
     .AddEnvironmentVariables();
 
 Log.Logger = new LoggerConfiguration()
