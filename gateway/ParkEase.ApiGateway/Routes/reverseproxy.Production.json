@@ -62,7 +62,7 @@
       "auth-cluster": {
         "Destinations": {
           "auth-destination": {
-            "Address": "https://parkease-auth-7dny.onrender.com/"
+            "Address": "https://parkease-auth-service.onrender.com/"
           }
         }
       },
