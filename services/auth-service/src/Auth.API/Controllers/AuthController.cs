@@ -30,6 +30,16 @@ public class AuthController : ControllerBase
     public async Task<IActionResult> Register([FromBody] RegisterRequest request)
         => Ok(await _service.RegisterAsync(request));
 
+    /// <summary>Google login/signup</summary>
+    /// <remarks>
+    /// Accepts Google identity profile details from the frontend and creates or signs in a driver/manager.
+    /// </remarks>
+    [HttpPost("google")]
+    [AllowAnonymous]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> Google([FromBody] GoogleAuthRequest request)
+        => Ok(await _service.GoogleAuthAsync(request));
     /// <summary>Login user</summary>
     /// <remarks>
     /// Validates email and password, then returns JWT access token,
