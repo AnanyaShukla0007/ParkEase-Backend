@@ -5,7 +5,7 @@ using Booking.Infrastructure.Persistence.Seed;
 using Microsoft.EntityFrameworkCore;
 using Booking.API.Filters;
 using Booking.API.Extensions;
-
+Environment.SetEnvironmentVariable("DOTNET_HOSTBUILDER__RELOADCONFIGONCHANGE", "false");
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddScoped<ValidationFilter>();
 builder.Services.AddControllers(options =>

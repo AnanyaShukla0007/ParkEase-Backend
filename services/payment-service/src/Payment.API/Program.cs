@@ -6,7 +6,7 @@ using Payment.API.Extensions;
 using Payment.API.Middlewares;
 using Payment.Infrastructure.Persistence;
 using Payment.Infrastructure.Persistence.Seed;
-
+Environment.SetEnvironmentVariable("DOTNET_HOSTBUILDER__RELOADCONFIGONCHANGE", "false");
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
