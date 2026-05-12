@@ -1,0 +1,29 @@
+[33mcommit d24a399e12e10019e41cafef524c848fbf6b83b3[m[33m ([m[1;32mparkease-web[m[33m)[m
+Author: Ananya Shukla <ananyashukla0307@gmail.com>
+Date:   Tue May 12 11:56:50 2026 +0530
+
+    Google OAuth, SMTP, Docker networking fixes
+
+[33mcommit 3817924f8ab66af940edeed6c99872e8e0050b21[m[33m ([m[1;31morigin/parkease-web[m[33m)[m
+Author: Ananya Shukla <ananyashukla0307@gmail.com>
+Date:   Thu Apr 23 11:37:02 2026 +0530
+
+    Ananya Shukla.ADD- Implemented ParkEase web  microservices.
+
+[33mcommit f3737512b362257eb86ec56fa164820e5d9b5aa3[m
+Author: Ananya Shukla <ananyashukla0307@gmail.com>
+Date:   Thu Apr 23 00:13:23 2026 +0530
+
+    Ananya Shukla.ADD- Implemented Booking Service microservices.
+
+[33mcommit a3a99588c9350ed27e5a45b9bf7e22bb49d6dfb5[m[33m ([m[1;31morigin/spot-service[m[33m, [m[1;32mspot-service[m[33m)[m
+Author: Ananya Shukla <ananyashukla0307@gmail.com>
+Date:   Tue Apr 21 17:09:57 2026 +0530
+
+    Ananya Shukla.ADD- Implemented Spot Service microservices.
+
+[33mcommit 4fc84444079f9c28b2a70080e82f24d613302f54[m[33m ([m[1;31morigin/auth-service[m[33m, [m[1;32mauth-service[m[33m)[m
+Author: Ananya Shukla <ananyashukla0307@gmail.com>
+Date:   Mon Apr 20 11:56:47 2026 +0530
+
+    Ananya Shukla.ADD- Implemented API Gateway and Auth Service microservices.

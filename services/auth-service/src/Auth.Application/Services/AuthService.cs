@@ -55,6 +55,55 @@ public class AuthService : IAuthService
         return await BuildAuthResponse(user);
     }
 
+
+    public async Task<AuthResponse> GoogleAuthAsync(GoogleAuthRequest request)
+    {
+        if (string.IsNullOrWhiteSpace(request.Email) ||
+            string.IsNullOrWhiteSpace(request.FullName) ||
+            string.IsNullOrWhiteSpace(request.GoogleId))
+        {
+            throw new InvalidOperationException("Google account details are incomplete.");
+        }
+
+        var email = request.Email.Trim().ToLowerInvariant();
+        var user = await _users.FindByEmailAsync(email);
+
+        if (user is null)
+        {
+            var role = string.IsNullOrWhiteSpace(request.Role)
+                ? "DRIVER"
+                : request.Role.Trim().ToUpperInvariant();
+
+            if (role is not "DRIVER" and not "MANAGER")
+                role = "DRIVER";
+
+            user = new User
+            {
+                FullName = request.FullName.Trim(),
+                Email = email,
+                UserName = email,
+                Role = role,
+                IsActive = true,
+                CreatedAt = DateTime.UtcNow,
+                EmailConfirmed = true
+            };
+
+            var result = await _userManager.CreateAsync(user);
+            if (!result.Succeeded)
+            {
+                throw new InvalidOperationException(
+                    string.Join(", ", result.Errors.Select(x => x.Description)));
+            }
+
+            await _userManager.AddToRoleAsync(user, user.Role);
+        }
+
+        if (!user.IsActive)
+            throw new UnauthorizedAccessException("Account disabled.");
+
+        return await BuildAuthResponse(user);
+    }
+
     public async Task<AuthResponse> LoginAsync(LoginRequest request)
     {
         var user = await _users.FindByEmailAsync(request.Email)
