@@ -5,9 +5,22 @@ using Serilog;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Configuration
-    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: false)
-    .AddJsonFile("appsettings.Development.json", optional: true, reloadOnChange: false)
-    .AddJsonFile("Routes/reverseproxy.json", optional: false, reloadOnChange: false)
+    .AddJsonFile(
+        "appsettings.json",
+        optional: false,
+        reloadOnChange: false)
+    .AddJsonFile(
+        $"appsettings.{builder.Environment.EnvironmentName}.json",
+        optional: true,
+        reloadOnChange: false)
+    .AddJsonFile(
+        "Routes/reverseproxy.json",
+        optional: false,
+        reloadOnChange: false)
+    .AddJsonFile(
+        $"Routes/reverseproxy.{builder.Environment.EnvironmentName}.json",
+        optional: true,
+        reloadOnChange: false)
     .AddEnvironmentVariables();
 
 Log.Logger = new LoggerConfiguration()
@@ -29,6 +42,7 @@ var app = builder.Build();
 app.UseMiddleware<GlobalExceptionMiddleware>();
 
 app.UseSwagger();
+
 app.UseSwaggerUI(options =>
 {
     options.SwaggerEndpoint("/swagger/v1/swagger.json", "ParkEase API Gateway v1");
@@ -36,9 +50,13 @@ app.UseSwaggerUI(options =>
 });
 
 // app.UseHttpsRedirection();
+
 app.UseCors("GatewayCors");
 
 app.MapControllers();
+
 app.MapReverseProxy();
+
 app.MapGet("/", () => Results.Redirect("/swagger"));
+
 app.Run();
