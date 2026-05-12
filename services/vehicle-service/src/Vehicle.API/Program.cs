@@ -62,7 +62,9 @@ app.MapControllers();
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<VehicleDbContext>();
-    await db.Database.EnsureCreatedAsync();
+
+    await db.Database.MigrateAsync();
+
     await VehicleSeeder.SeedAsync(db);
 }
 
