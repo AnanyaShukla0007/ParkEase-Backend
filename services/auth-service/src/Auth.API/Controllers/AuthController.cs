@@ -40,6 +40,7 @@ public class AuthController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Google([FromBody] GoogleAuthRequest request)
         => Ok(await _service.GoogleAuthAsync(request));
+
     /// <summary>Login user</summary>
     /// <remarks>
     /// Validates email and password, then returns JWT access token,

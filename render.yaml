@@ -1,0 +1,193 @@
+services:
+  - type: web
+    name: parkease-api-gateway
+    env: docker
+    plan: free
+    dockerfilePath: ./gateway/ParkEase.ApiGateway/Dockerfile
+    dockerContext: ./gateway/ParkEase.ApiGateway
+    healthCheckPath: /swagger
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+      - key: ASPNETCORE_URLS
+        value: http://+:5000
+      - key: ReverseProxy__Clusters__auth-cluster__Destinations__auth-destination__Address
+        value: https://parkease-auth.onrender.com/
+      - key: ReverseProxy__Clusters__parkinglot-cluster__Destinations__parkinglot-destination__Address
+        value: https://parkease-parkinglot.onrender.com/
+      - key: ReverseProxy__Clusters__spot-cluster__Destinations__spot-destination__Address
+        value: https://parkease-spot.onrender.com/
+      - key: ReverseProxy__Clusters__booking-cluster__Destinations__booking-destination__Address
+        value: https://parkease-booking.onrender.com/
+      - key: ReverseProxy__Clusters__payment-cluster__Destinations__payment-destination__Address
+        value: https://parkease-payment.onrender.com/
+      - key: ReverseProxy__Clusters__vehicle-cluster__Destinations__vehicle-destination__Address
+        value: https://parkease-vehicle.onrender.com/
+      - key: ReverseProxy__Clusters__notification-cluster__Destinations__notification-destination__Address
+        value: https://parkease-notification.onrender.com/
+      - key: ReverseProxy__Clusters__analytics-cluster__Destinations__analytics-destination__Address
+        value: https://parkease-analytics.onrender.com/
+
+  - type: web
+    name: parkease-auth
+    env: docker
+    plan: free
+    dockerfilePath: ./services/auth-service/Dockerfile
+    dockerContext: ./services/auth-service
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+      - key: ASPNETCORE_URLS
+        value: http://+:5001
+      - key: ConnectionStrings__AuthDb
+        sync: false
+      - key: JwtSettings__SecretKey
+        sync: false
+      - key: JwtSettings__Issuer
+        value: ParkEase.Auth
+      - key: JwtSettings__Audience
+        value: ParkEase.Client
+      - key: EmailSettings__DeliveryMode
+        value: Smtp
+      - key: EmailSettings__SmtpHost
+        value: smtp.gmail.com
+      - key: EmailSettings__SmtpPort
+        value: 587
+      - key: EmailSettings__EnableSsl
+        value: true
+      - key: EmailSettings__SenderName
+        value: ParkEase
+      - key: EmailSettings__SenderEmail
+        sync: false
+      - key: EmailSettings__Username
+        sync: false
+      - key: EmailSettings__Password
+        sync: false
+
+  - type: web
+    name: parkease-parkinglot
+    env: docker
+    plan: free
+    dockerfilePath: ./services/parkinglot-service/Dockerfile
+    dockerContext: ./services/parkinglot-service
+    envVars: &serviceEnv
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+      - key: ConnectionStrings__DefaultConnection
+        sync: false
+      - key: JwtSettings__SecretKey
+        sync: false
+      - key: JwtSettings__Issuer
+        value: ParkEase.Auth
+      - key: JwtSettings__Audience
+        value: ParkEase.Client
+      - key: Services__BookingUrl
+        value: https://parkease-booking.onrender.com
+
+  - type: web
+    name: parkease-spot
+    env: docker
+    plan: free
+    dockerfilePath: ./services/spot-service/Dockerfile
+    dockerContext: ./services/spot-service
+    envVars: *serviceEnv
+
+  - type: web
+    name: parkease-booking
+    env: docker
+    plan: free
+    dockerfilePath: ./services/booking-service/Dockerfile
+    dockerContext: ./services/booking-service
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+      - key: ConnectionStrings__DefaultConnection
+        sync: false
+      - key: JwtSettings__SecretKey
+        sync: false
+      - key: JwtSettings__Issuer
+        value: ParkEase.Auth
+      - key: JwtSettings__Audience
+        value: ParkEase.Client
+      - key: Services__SpotUrl
+        value: https://parkease-spot.onrender.com
+      - key: Services__ParkingLotUrl
+        value: https://parkease-parkinglot.onrender.com
+      - key: Services__NotificationUrl
+        value: https://parkease-notification.onrender.com
+      - key: InternalApiKey
+        sync: false
+
+  - type: web
+    name: parkease-payment
+    env: docker
+    plan: free
+    dockerfilePath: ./services/payment-service/Dockerfile
+    dockerContext: ./services/payment-service
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+      - key: ConnectionStrings__DefaultConnection
+        sync: false
+      - key: JwtSettings__SecretKey
+        sync: false
+      - key: JwtSettings__Issuer
+        value: ParkEase.Auth
+      - key: JwtSettings__Audience
+        value: ParkEase.Client
+      - key: Services__BookingUrl
+        value: https://parkease-booking.onrender.com
+
+  - type: web
+    name: parkease-vehicle
+    env: docker
+    plan: free
+    dockerfilePath: ./services/vehicle-service/Dockerfile
+    dockerContext: ./services/vehicle-service
+    envVars: *serviceEnv
+
+  - type: web
+    name: parkease-notification
+    env: docker
+    plan: free
+    dockerfilePath: ./services/notification-service/Dockerfile
+    dockerContext: ./services/notification-service
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+      - key: ConnectionStrings__DefaultConnection
+        sync: false
+      - key: JwtSettings__SecretKey
+        sync: false
+      - key: JwtSettings__Issuer
+        value: ParkEase.Auth
+      - key: JwtSettings__Audience
+        value: ParkEase.Client
+      - key: InternalApiKey
+        sync: false
+
+  - type: web
+    name: parkease-analytics
+    env: docker
+    plan: free
+    dockerfilePath: ./services/analytics-service/Dockerfile
+    dockerContext: ./services/analytics-service
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+      - key: ConnectionStrings__DefaultConnection
+        sync: false
+      - key: JwtSettings__SecretKey
+        sync: false
+      - key: JwtSettings__Issuer
+        value: ParkEase.Auth
+      - key: JwtSettings__Audience
+        value: ParkEase.Client
+      - key: Services__BookingUrl
+        value: https://parkease-booking.onrender.com
+      - key: Services__PaymentUrl
+        value: https://parkease-payment.onrender.com
+      - key: Services__SpotUrl
+        value: https://parkease-spot.onrender.com
+      - key: Services__AuthUrl
+        value: https://parkease-auth.onrender.com

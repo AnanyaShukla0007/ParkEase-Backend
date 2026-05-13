@@ -49,7 +49,6 @@ app.UseSwaggerUI(options =>
     options.RoutePrefix = "swagger";
 });
 
-// app.UseHttpsRedirection();
 
 app.UseCors("GatewayCors");
 
@@ -59,4 +58,4 @@ app.MapReverseProxy();
 
 app.MapGet("/", () => Results.Redirect("/swagger"));
 
-app.Run();
+await app.RunAsync();
