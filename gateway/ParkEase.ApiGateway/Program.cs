@@ -39,8 +39,6 @@ builder.Services.AddGatewayReverseProxy(builder.Configuration);
 
 var app = builder.Build();
 
-app.UseMiddleware<GlobalExceptionMiddleware>();
-
 app.UseSwagger();
 
 app.UseSwaggerUI(options =>
@@ -51,6 +49,24 @@ app.UseSwaggerUI(options =>
 
 
 app.UseCors("GatewayCors");
+
+app.Use(async (context, next) =>
+{
+    context.Response.OnStarting(() =>
+    {
+        context.Response.Headers.Remove("Access-Control-Allow-Origin");
+        context.Response.Headers.Remove("Access-Control-Allow-Credentials");
+        context.Response.Headers.Remove("Access-Control-Allow-Headers");
+        context.Response.Headers.Remove("Access-Control-Allow-Methods");
+        context.Response.Headers.Remove("Access-Control-Expose-Headers");
+
+        return Task.CompletedTask;
+    });
+
+    await next();
+});
+
+app.UseMiddleware<GlobalExceptionMiddleware>();
 
 app.MapControllers();
 
