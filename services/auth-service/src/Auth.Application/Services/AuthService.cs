@@ -26,19 +26,49 @@ public class AuthService : IAuthService
 
     public async Task<AuthResponse> RegisterAsync(RegisterRequest request)
     {
-        if (await _users.ExistsByEmailAsync(request.Email))
-            throw new InvalidOperationException("Email already registered.");
+        var email = request.Email.Trim().ToLowerInvariant();
+        var phone = request.PhoneNumber.Trim();
+        var role = request.Role.Trim().ToUpperInvariant();
 
-        if (await _users.ExistsByPhoneAsync(request.PhoneNumber))
+        if (role is not "DRIVER" and not "MANAGER" and not "ADMIN")
+            role = "DRIVER";
+
+        var existingUser = await _users.FindByEmailAsync(email);
+        if (existingUser is not null)
+        {
+            if (role == "MANAGER" && existingUser.Role == "DRIVER")
+            {
+                var phoneOwner = await _users.FindByPhoneAsync(phone);
+                if (phoneOwner is not null && phoneOwner.Id != existingUser.Id)
+                    throw new InvalidOperationException("Phone already registered.");
+
+                existingUser.FullName = request.FullName.Trim();
+                existingUser.PhoneNumber = phone;
+                existingUser.Role = "MANAGER";
+                existingUser.IsActive = true;
+                existingUser.UpdatedAt = DateTime.UtcNow;
+
+                await _users.UpdateAsync(existingUser);
+
+                if (!await _userManager.IsInRoleAsync(existingUser, "MANAGER"))
+                    await _userManager.AddToRoleAsync(existingUser, "MANAGER");
+
+                return await BuildAuthResponse(existingUser);
+            }
+
+            throw new InvalidOperationException("Email already registered.");
+        }
+
+        if (await _users.ExistsByPhoneAsync(phone))
             throw new InvalidOperationException("Phone already registered.");
 
         var user = new User
         {
             FullName = request.FullName.Trim(),
-            Email = request.Email.Trim().ToLower(),
-            UserName = request.Email.Trim().ToLower(),
-            PhoneNumber = request.PhoneNumber,
-            Role = request.Role.ToUpper(),
+            Email = email,
+            UserName = email,
+            PhoneNumber = phone,
+            Role = role,
             VehiclePlate = request.VehiclePlate,
             IsActive = true,
             CreatedAt = DateTime.UtcNow
