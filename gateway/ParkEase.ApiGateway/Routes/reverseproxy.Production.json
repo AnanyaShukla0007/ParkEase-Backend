@@ -36,6 +36,13 @@
         }
       },
 
+      "vehicle-root-route": {
+        "ClusterId": "vehicle-cluster",
+        "Match": {
+          "Path": "/api/v1/vehicles"
+        }
+      },
+
       "vehicle-route": {
         "ClusterId": "vehicle-cluster",
         "Match": {
@@ -62,7 +69,7 @@
       "auth-cluster": {
         "Destinations": {
           "auth-destination": {
-            "Address": "https://parkease-auth-service.onrender.com/"
+            "Address": "https://parkease-auth-service-1tz8.onrender.com/"
           }
         }
       },
@@ -70,7 +77,7 @@
       "parkinglot-cluster": {
         "Destinations": {
           "parkinglot-destination": {
-            "Address": "https://parkease-parkinglot.onrender.com/"
+            "Address": "https://parkease-parkinglot-6d7g.onrender.com/"
           }
         }
       },
@@ -78,7 +85,7 @@
       "spot-cluster": {
         "Destinations": {
           "spot-destination": {
-            "Address": "https://parkease-spot.onrender.com/"
+            "Address": "https://parkease-spot-iafd.onrender.com/"
           }
         }
       },
@@ -86,7 +93,7 @@
       "booking-cluster": {
         "Destinations": {
           "booking-destination": {
-            "Address": "https://parkease-booking.onrender.com/"
+            "Address": "https://parkease-booking-rcdk.onrender.com/"
           }
         }
       },
@@ -94,7 +101,7 @@
       "payment-cluster": {
         "Destinations": {
           "payment-destination": {
-            "Address": "https://parkease-payment.onrender.com/"
+            "Address": "https://parkease-payment-pr9p.onrender.com/"
           }
         }
       },
@@ -102,7 +109,7 @@
       "vehicle-cluster": {
         "Destinations": {
           "vehicle-destination": {
-            "Address": "https://parkease-vehicle.onrender.com/"
+            "Address": "https://parkease-vehicle-g1is.onrender.com/"
           }
         }
       },
@@ -110,7 +117,7 @@
       "notification-cluster": {
         "Destinations": {
           "notification-destination": {
-            "Address": "https://parkease-notification.onrender.com/"
+            "Address": "https://parkease-notification-4gye.onrender.com/"
           }
         }
       },
@@ -118,7 +125,7 @@
       "analytics-cluster": {
         "Destinations": {
           "analytics-destination": {
-            "Address": "https://parkease-analytics.onrender.com/"
+            "Address": "https://parkease-analytics-1yh8.onrender.com/"
           }
         }
       }

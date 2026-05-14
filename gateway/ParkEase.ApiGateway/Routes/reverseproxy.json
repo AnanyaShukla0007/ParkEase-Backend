@@ -25,6 +25,12 @@
           "Path": "/api/v1/payments/{**catch-all}"
         }
       },
+      "vehicle-root-route": {
+        "ClusterId": "vehicle-cluster",
+        "Match": {
+          "Path": "/api/v1/vehicles"
+        }
+      },
       "vehicle-route": {
         "ClusterId": "vehicle-cluster",
         "Match": {

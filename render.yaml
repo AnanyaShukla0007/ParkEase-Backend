@@ -12,21 +12,21 @@ services:
       - key: ASPNETCORE_URLS
         value: http://+:5000
       - key: ReverseProxy__Clusters__auth-cluster__Destinations__auth-destination__Address
-        value: https://parkease-auth.onrender.com/
+        value: https://parkease-auth-service-1tz8.onrender.com/
       - key: ReverseProxy__Clusters__parkinglot-cluster__Destinations__parkinglot-destination__Address
-        value: https://parkease-parkinglot.onrender.com/
+        value: https://parkease-parkinglot-6d7g.onrender.com/
       - key: ReverseProxy__Clusters__spot-cluster__Destinations__spot-destination__Address
-        value: https://parkease-spot.onrender.com/
+        value: https://parkease-spot-iafd.onrender.com/
       - key: ReverseProxy__Clusters__booking-cluster__Destinations__booking-destination__Address
-        value: https://parkease-booking.onrender.com/
+        value: https://parkease-booking-rcdk.onrender.com/
       - key: ReverseProxy__Clusters__payment-cluster__Destinations__payment-destination__Address
-        value: https://parkease-payment.onrender.com/
+        value: https://parkease-payment-pr9p.onrender.com/
       - key: ReverseProxy__Clusters__vehicle-cluster__Destinations__vehicle-destination__Address
-        value: https://parkease-vehicle.onrender.com/
+        value: https://parkease-vehicle-g1is.onrender.com/
       - key: ReverseProxy__Clusters__notification-cluster__Destinations__notification-destination__Address
-        value: https://parkease-notification.onrender.com/
+        value: https://parkease-notification-4gye.onrender.com/
       - key: ReverseProxy__Clusters__analytics-cluster__Destinations__analytics-destination__Address
-        value: https://parkease-analytics.onrender.com/
+        value: https://parkease-analytics-1yh8.onrender.com/
 
   - type: web
     name: parkease-auth
@@ -82,7 +82,7 @@ services:
       - key: JwtSettings__Audience
         value: ParkEase.Client
       - key: Services__BookingUrl
-        value: https://parkease-booking.onrender.com
+        value: https://parkease-booking-rcdk.onrender.com
 
   - type: web
     name: parkease-spot
@@ -110,11 +110,11 @@ services:
       - key: JwtSettings__Audience
         value: ParkEase.Client
       - key: Services__SpotUrl
-        value: https://parkease-spot.onrender.com
+        value: https://parkease-spot-iafd.onrender.com
       - key: Services__ParkingLotUrl
-        value: https://parkease-parkinglot.onrender.com
+        value: https://parkease-parkinglot-6d7g.onrender.com
       - key: Services__NotificationUrl
-        value: https://parkease-notification.onrender.com
+        value: https://parkease-notification-4gye.onrender.com
       - key: InternalApiKey
         sync: false
 
@@ -136,7 +136,7 @@ services:
       - key: JwtSettings__Audience
         value: ParkEase.Client
       - key: Services__BookingUrl
-        value: https://parkease-booking.onrender.com
+        value: https://parkease-booking-rcdk.onrender.com
 
   - type: web
     name: parkease-vehicle
@@ -184,10 +184,10 @@ services:
       - key: JwtSettings__Audience
         value: ParkEase.Client
       - key: Services__BookingUrl
-        value: https://parkease-booking.onrender.com
+        value: https://parkease-booking-rcdk.onrender.com
       - key: Services__PaymentUrl
-        value: https://parkease-payment.onrender.com
+        value: https://parkease-payment-pr9p.onrender.com
       - key: Services__SpotUrl
-        value: https://parkease-spot.onrender.com
+        value: https://parkease-spot-iafd.onrender.com
       - key: Services__AuthUrl
-        value: https://parkease-auth.onrender.com
+        value: https://parkease-auth-service-1tz8.onrender.com
