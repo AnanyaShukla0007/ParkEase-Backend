@@ -36,7 +36,7 @@ public class AuthService : IAuthService
         var existingUser = await _users.FindByEmailAsync(email);
         if (existingUser is not null)
         {
-            if (role == "MANAGER" && existingUser.Role == "DRIVER")
+            if (role == "MANAGER" && existingUser.Role is "DRIVER" or "MANAGER")
             {
                 var phoneOwner = await _users.FindByPhoneAsync(phone);
                 if (phoneOwner is not null && phoneOwner.Id != existingUser.Id)

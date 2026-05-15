@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Auth.Infrastructure.Security;
+using Auth.Infrastructure.Seed;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -110,6 +111,7 @@ using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AuthDbContext>();
     db.Database.Migrate();
+    await AuthUserSeeder.SeedAsync(scope.ServiceProvider);
 }
 
 app.UseMiddleware<GlobalExceptionMiddleware>();
