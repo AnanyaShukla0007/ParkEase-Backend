@@ -1,3 +1,6 @@
+using System.Text.Json;
+using System.Text.Json.Serialization;
+
 namespace Auth.Application.DTOs;
 
 public class ManagerApplicationRequest
@@ -18,9 +21,22 @@ public class ManagerApplicationRequest
 
     public string Address { get; set; } = string.Empty;
 
+    public string LotAddress { get; set; } = string.Empty;
+
+    public string FacilityAddress { get; set; } = string.Empty;
+
+    public string Location { get; set; } = string.Empty;
+
     public string City { get; set; } = string.Empty;
+
+    public string LotCity { get; set; } = string.Empty;
+
+    public string FacilityCity { get; set; } = string.Empty;
 
     public string? Notes { get; set; }
 
     public string? AnythingElse { get; set; }
+
+    [JsonExtensionData]
+    public Dictionary<string, JsonElement> ExtraFields { get; set; } = new();
 }

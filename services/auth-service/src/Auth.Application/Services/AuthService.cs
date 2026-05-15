@@ -2,6 +2,7 @@ using Auth.Application.DTOs;
 using Auth.Application.Interfaces;
 using Auth.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
+using System.Text.Json;
 
 namespace Auth.Application.Services;
 
@@ -87,9 +88,29 @@ public class AuthService : IAuthService
 
     public Task<AuthResponse> ApplyManagerAsync(ManagerApplicationRequest request)
     {
-        var fullName = FirstValue(request.FullName, request.Name);
-        var phone = FirstValue(request.PhoneNumber, request.Phone);
-        var lotName = FirstValue(request.ProposedLotName, request.LotName);
+        var fullName = FirstValue(
+            request.FullName,
+            request.Name,
+            ExtraValue(request, "fullName", "name", "applicantName", "ownerName"));
+        var phone = FirstValue(
+            request.PhoneNumber,
+            request.Phone,
+            ExtraValue(request, "phoneNumber", "phone", "mobile", "mobileNumber", "contactNumber"));
+        var lotName = FirstValue(
+            request.ProposedLotName,
+            request.LotName,
+            ExtraValue(request, "proposedLotName", "lotName", "parkingLotName", "facilityName"));
+        var address = FirstValue(
+            request.Address,
+            request.LotAddress,
+            request.FacilityAddress,
+            request.Location,
+            ExtraValue(request, "address", "lotAddress", "facilityAddress", "parkingAddress", "location", "addressLine", "street"));
+        var city = FirstValue(
+            request.City,
+            request.LotCity,
+            request.FacilityCity,
+            ExtraValue(request, "city", "lotCity", "facilityCity", "parkingCity"));
 
         if (string.IsNullOrWhiteSpace(fullName))
             throw new ArgumentException("Full name is required.");
@@ -103,10 +124,10 @@ public class AuthService : IAuthService
         if (string.IsNullOrWhiteSpace(lotName))
             throw new ArgumentException("Proposed lot name is required.");
 
-        if (string.IsNullOrWhiteSpace(request.Address))
+        if (string.IsNullOrWhiteSpace(address))
             throw new ArgumentException("Address is required.");
 
-        if (string.IsNullOrWhiteSpace(request.City))
+        if (string.IsNullOrWhiteSpace(city))
             throw new ArgumentException("City is required.");
 
         return RegisterAsync(new RegisterRequest
@@ -337,4 +358,47 @@ public class AuthService : IAuthService
 
     private static string FirstValue(params string?[] values)
         => values.FirstOrDefault(x => !string.IsNullOrWhiteSpace(x))?.Trim() ?? string.Empty;
+
+    private static string ExtraValue(
+        ManagerApplicationRequest request,
+        params string[] keys)
+    {
+        foreach (var key in keys)
+        {
+            var match = request.ExtraFields.FirstOrDefault(x =>
+                NormalizeKey(x.Key) == NormalizeKey(key));
+
+            if (!string.IsNullOrWhiteSpace(match.Key) &&
+                TryGetString(match.Value, out var value))
+            {
+                return value;
+            }
+        }
+
+        return string.Empty;
+    }
+
+    private static string NormalizeKey(string key)
+        => new(key.Where(char.IsLetterOrDigit).Select(char.ToLowerInvariant).ToArray());
+
+    private static bool TryGetString(JsonElement element, out string value)
+    {
+        value = string.Empty;
+
+        if (element.ValueKind == JsonValueKind.String)
+        {
+            value = element.GetString() ?? string.Empty;
+            return !string.IsNullOrWhiteSpace(value);
+        }
+
+        if (element.ValueKind == JsonValueKind.Number ||
+            element.ValueKind == JsonValueKind.True ||
+            element.ValueKind == JsonValueKind.False)
+        {
+            value = element.ToString();
+            return !string.IsNullOrWhiteSpace(value);
+        }
+
+        return false;
+    }
 }
