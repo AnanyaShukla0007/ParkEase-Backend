@@ -87,11 +87,33 @@ public class AuthService : IAuthService
 
     public Task<AuthResponse> ApplyManagerAsync(ManagerApplicationRequest request)
     {
+        var fullName = FirstValue(request.FullName, request.Name);
+        var phone = FirstValue(request.PhoneNumber, request.Phone);
+        var lotName = FirstValue(request.ProposedLotName, request.LotName);
+
+        if (string.IsNullOrWhiteSpace(fullName))
+            throw new ArgumentException("Full name is required.");
+
+        if (string.IsNullOrWhiteSpace(request.Email))
+            throw new ArgumentException("Email is required.");
+
+        if (string.IsNullOrWhiteSpace(phone))
+            throw new ArgumentException("Phone number is required.");
+
+        if (string.IsNullOrWhiteSpace(lotName))
+            throw new ArgumentException("Proposed lot name is required.");
+
+        if (string.IsNullOrWhiteSpace(request.Address))
+            throw new ArgumentException("Address is required.");
+
+        if (string.IsNullOrWhiteSpace(request.City))
+            throw new ArgumentException("City is required.");
+
         return RegisterAsync(new RegisterRequest
         {
-            FullName = request.FullName,
+            FullName = fullName,
             Email = request.Email,
-            PhoneNumber = request.PhoneNumber,
+            PhoneNumber = phone,
             Password = "Manager@ParkEase2026",
             Role = "MANAGER"
         });
@@ -312,4 +334,7 @@ public class AuthService : IAuthService
             CreatedAt = user.CreatedAt
         };
     }
+
+    private static string FirstValue(params string?[] values)
+        => values.FirstOrDefault(x => !string.IsNullOrWhiteSpace(x))?.Trim() ?? string.Empty;
 }
