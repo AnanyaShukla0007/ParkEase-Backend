@@ -124,12 +124,6 @@ public class AuthService : IAuthService
         if (string.IsNullOrWhiteSpace(lotName))
             throw new ArgumentException("Proposed lot name is required.");
 
-        if (string.IsNullOrWhiteSpace(address))
-            throw new ArgumentException("Address is required.");
-
-        if (string.IsNullOrWhiteSpace(city))
-            throw new ArgumentException("City is required.");
-
         return RegisterAsync(new RegisterRequest
         {
             FullName = fullName,
