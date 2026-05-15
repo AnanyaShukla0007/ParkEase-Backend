@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ParkingLot.Application.DTOs;
 using ParkingLot.Application.Interfaces;
+using System.Security.Claims;
 
 namespace ParkingLot.API.Controllers;
 
@@ -22,7 +23,19 @@ public class ParkingLotsController : ControllerBase
     [HttpPost]
     [Authorize(Roles = "MANAGER,ADMIN")]
     public async Task<IActionResult> Create([FromBody] CreateParkingLotRequest request)
-        => Ok(await _service.CreateAsync(request));
+    {
+        if (request.ManagerId <= 0)
+        {
+            var value =
+                User.FindFirst("userId")?.Value ??
+                User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (int.TryParse(value, out var managerId))
+                request.ManagerId = managerId;
+        }
+
+        return Ok(await _service.CreateAsync(request));
+    }
 
     /// <summary>Get all parking lots</summary>
     /// <remarks>Access: Public (Guest, Driver, Manager, Admin)</remarks>

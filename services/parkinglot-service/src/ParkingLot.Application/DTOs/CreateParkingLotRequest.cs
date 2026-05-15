@@ -18,10 +18,8 @@ public class CreateParkingLotRequest
     [Required]
     public string City { get; set; } = string.Empty;
 
-    [Required]
     public string State { get; set; } = string.Empty;
 
-    [Required]
     public string Pincode { get; set; } = string.Empty;
 
     [Range(-90, 90)]
@@ -31,7 +29,7 @@ public class CreateParkingLotRequest
     public double Longitude { get; set; }
 
     [Range(1, int.MaxValue)]
-    public int TotalSpots { get; set; }
+    public int TotalSpots { get; set; } = 20;
 
     [Required]
     public int ManagerId { get; set; }
