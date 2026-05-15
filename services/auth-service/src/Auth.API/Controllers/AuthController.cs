@@ -30,6 +30,17 @@ public class AuthController : ControllerBase
     public async Task<IActionResult> Register([FromBody] RegisterRequest request)
         => Ok(await _service.RegisterAsync(request));
 
+    /// <summary>Apply for a lot manager account</summary>
+    /// <remarks>
+    /// Creates or upgrades a manager account from the public manager application form.
+    /// </remarks>
+    [HttpPost("manager/apply")]
+    [AllowAnonymous]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> ApplyManager([FromBody] ManagerApplicationRequest request)
+        => Ok(await _service.ApplyManagerAsync(request));
+
     /// <summary>Google login/signup</summary>
     /// <remarks>
     /// Accepts Google identity profile details from the frontend and creates or signs in a driver/manager.

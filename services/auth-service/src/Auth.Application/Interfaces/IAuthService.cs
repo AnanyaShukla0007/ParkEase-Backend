@@ -6,6 +6,8 @@ public interface IAuthService
 {
     Task<AuthResponse> RegisterAsync(RegisterRequest request);
 
+    Task<AuthResponse> ApplyManagerAsync(ManagerApplicationRequest request);
+
     Task<AuthResponse> GoogleAuthAsync(GoogleAuthRequest request);
 
     Task<AuthResponse> LoginAsync(LoginRequest request);

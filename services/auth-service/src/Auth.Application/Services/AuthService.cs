@@ -85,6 +85,18 @@ public class AuthService : IAuthService
         return await BuildAuthResponse(user);
     }
 
+    public Task<AuthResponse> ApplyManagerAsync(ManagerApplicationRequest request)
+    {
+        return RegisterAsync(new RegisterRequest
+        {
+            FullName = request.FullName,
+            Email = request.Email,
+            PhoneNumber = request.PhoneNumber,
+            Password = "Manager@ParkEase2026",
+            Role = "MANAGER"
+        });
+    }
+
 
     public async Task<AuthResponse> GoogleAuthAsync(GoogleAuthRequest request)
     {
