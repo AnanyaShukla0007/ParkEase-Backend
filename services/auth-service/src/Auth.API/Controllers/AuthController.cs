@@ -249,6 +249,12 @@ public class AuthController : ControllerBase
             data = await _service.ApproveManagerApplicationAsync(userId)
         });
 
+    [HttpPost("manager/applications/{userId:int}/approve")]
+    [Authorize(Roles = "ADMIN")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public Task<IActionResult> ApproveManagerApplicationPost(int userId)
+        => ApproveManagerApplication(userId);
+
     [HttpPut("manager/applications/{userId:int}/reject")]
     [Authorize(Roles = "ADMIN")]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -261,6 +267,14 @@ public class AuthController : ControllerBase
             message = "Manager application rejected.",
             data = await _service.RejectManagerApplicationAsync(userId, request.Reason)
         });
+
+    [HttpPost("manager/applications/{userId:int}/reject")]
+    [Authorize(Roles = "ADMIN")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public Task<IActionResult> RejectManagerApplicationPost(
+        int userId,
+        [FromBody] ManagerApplicationDecisionRequest request)
+        => RejectManagerApplication(userId, request);
 
     /// <summary>Get user by ID</summary>
     /// <remarks>
