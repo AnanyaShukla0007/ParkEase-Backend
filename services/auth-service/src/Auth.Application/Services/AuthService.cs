@@ -446,7 +446,6 @@ public class AuthService : IAuthService
             FullName = user.FullName,
             Email = user.Email ?? "",
             Username = user.Email ?? "",
-            UserName = user.Email ?? "",
             Password = user.ManagerApplicationStatus is "PENDING" or "APPROVED"
                 ? "Manager@ParkEase2026"
                 : string.Empty,
