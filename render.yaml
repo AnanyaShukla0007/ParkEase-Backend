@@ -5,7 +5,7 @@ services:
     plan: free
     dockerfilePath: ./gateway/ParkEase.ApiGateway/Dockerfile
     dockerContext: ./gateway/ParkEase.ApiGateway
-    healthCheckPath: /swagger
+    healthCheckPath: /api/gateway/health
     envVars:
       - key: ASPNETCORE_ENVIRONMENT
         value: Production

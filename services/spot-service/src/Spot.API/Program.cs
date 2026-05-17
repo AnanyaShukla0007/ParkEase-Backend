@@ -6,6 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using ParkEase.Spot.Infrastructure;
 using ParkEase.Spot.Infrastructure.Persistence;
+using ParkEase.Spot.Infrastructure.Persistence.Seed;
 Environment.SetEnvironmentVariable("DOTNET_HOSTBUILDER__RELOADCONFIGONCHANGE", "false");
 var builder = WebApplication.CreateBuilder(args);
 
@@ -129,6 +130,7 @@ using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<SpotDbContext>();
     db.Database.Migrate();
+    await SpotSeeder.SeedAsync(db);
 }
 
 app.Run();

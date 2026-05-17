@@ -14,6 +14,5 @@ COPY --from=build /app/publish .
 EXPOSE 5010
 
 ENV ASPNETCORE_URLS=http://+:5010
-ENV ASPNETCORE_ENVIRONMENT=Development
 
 ENTRYPOINT ["dotnet", "ParkEase.Web.dll"]

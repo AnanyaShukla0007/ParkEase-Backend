@@ -14,6 +14,5 @@ COPY --from=build /app/publish .
 EXPOSE 5006
 
 ENV ASPNETCORE_URLS=http://+:5006
-ENV ASPNETCORE_ENVIRONMENT=Development
 
 ENTRYPOINT ["dotnet", "Vehicle.API.dll"]

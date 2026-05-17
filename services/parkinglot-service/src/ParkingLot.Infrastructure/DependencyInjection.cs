@@ -15,7 +15,8 @@ public static class DependencyInjection
     {
         services.AddDbContext<ParkingLotDbContext>(options =>
             options.UseNpgsql(
-                configuration.GetConnectionString("DefaultConnection")));
+                configuration.GetConnectionString("DefaultConnection"),
+                b => b.MigrationsAssembly("ParkingLot.Infrastructure")));
 
         services.AddScoped<IParkingLotRepository, ParkingLotRepository>();
 

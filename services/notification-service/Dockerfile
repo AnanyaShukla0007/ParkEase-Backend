@@ -14,6 +14,5 @@ COPY --from=build /app/publish .
 EXPOSE 5007
 
 ENV ASPNETCORE_URLS=http://+:5007
-ENV ASPNETCORE_ENVIRONMENT=Development
 
 ENTRYPOINT ["dotnet", "Notification.API.dll"]

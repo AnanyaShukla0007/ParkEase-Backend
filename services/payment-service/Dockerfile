@@ -14,6 +14,5 @@ COPY --from=build /app/publish .
 EXPOSE 5005
 
 ENV ASPNETCORE_URLS=http://+:5005
-ENV ASPNETCORE_ENVIRONMENT=Development
 
 ENTRYPOINT ["dotnet", "Payment.API.dll"]

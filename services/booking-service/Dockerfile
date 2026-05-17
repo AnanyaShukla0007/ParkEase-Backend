@@ -14,7 +14,6 @@ WORKDIR /app
 EXPOSE 5004
 
 ENV ASPNETCORE_URLS=http://+:5004
-ENV ASPNETCORE_ENVIRONMENT=Development
 
 COPY --from=build /app/publish .
 

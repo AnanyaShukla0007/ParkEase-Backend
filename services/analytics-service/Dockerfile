@@ -14,6 +14,5 @@ COPY --from=build /app/publish .
 EXPOSE 5008
 
 ENV ASPNETCORE_URLS=http://+:5008
-ENV ASPNETCORE_ENVIRONMENT=Development
 
 ENTRYPOINT ["dotnet", "Analytics.API.dll"]

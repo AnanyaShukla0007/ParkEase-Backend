@@ -16,7 +16,8 @@ public static class DependencyInjection
     {
         services.AddDbContext<SpotDbContext>(options =>
             options.UseNpgsql(
-                configuration.GetConnectionString("DefaultConnection")));
+                configuration.GetConnectionString("DefaultConnection"),
+                b => b.MigrationsAssembly("Spot.Infrastructure")));
 
         services.AddScoped<ISpotRepository, SpotRepository>();
         services.AddScoped<ISpotService, SpotServices>();

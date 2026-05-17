@@ -2,9 +2,12 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Microsoft.EntityFrameworkCore;
 using ParkingLot.API.Extensions;
 using ParkingLot.API.Middlewares;
 using ParkingLot.Infrastructure;
+using ParkingLot.Infrastructure.Persistence;
+using ParkingLot.Infrastructure.Persistence.Seed;
 Environment.SetEnvironmentVariable("DOTNET_HOSTBUILDER__RELOADCONFIGONCHANGE", "false");
 var builder = WebApplication.CreateBuilder(args);
 
@@ -115,5 +118,12 @@ app.UseAuthorization();
 app.MapGet("/", () => Results.Redirect("/swagger"));
 
 app.MapControllers();
+
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<ParkingLotDbContext>();
+    db.Database.Migrate();
+    await ParkingLotSeeder.SeedAsync(db);
+}
 
 app.Run();
