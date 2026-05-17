@@ -294,7 +294,11 @@ public class AuthService : IAuthService
             .Where(x => !string.IsNullOrWhiteSpace(x.ProposedLotName) ||
                         x.ManagerApplicationStatus is "PENDING" or "APPROVED" or "REJECTED" ||
                         x.Role == "MANAGER")
-            .Where(x => normalizedStatus is null || x.ManagerApplicationStatus == normalizedStatus)
+            .Where(x => normalizedStatus is null ||
+                        x.ManagerApplicationStatus == normalizedStatus ||
+                        normalizedStatus == "PENDING" &&
+                        (string.IsNullOrWhiteSpace(x.ManagerApplicationStatus) ||
+                         x.ManagerApplicationStatus == "NONE"))
             .OrderByDescending(x => x.UpdatedAt ?? x.CreatedAt)
             .Select(Map)
             .ToList();
@@ -429,6 +433,13 @@ public class AuthService : IAuthService
 
     private static UserResponse Map(User user)
     {
+        var managerApplicationStatus = user.ManagerApplicationStatus;
+        if (string.IsNullOrWhiteSpace(managerApplicationStatus) ||
+            managerApplicationStatus == "NONE" && !string.IsNullOrWhiteSpace(user.ProposedLotName))
+        {
+            managerApplicationStatus = "PENDING";
+        }
+
         return new UserResponse
         {
             Id = user.Id,
@@ -438,7 +449,7 @@ public class AuthService : IAuthService
             Role = user.Role,
             VehiclePlate = user.VehiclePlate,
             ProfilePicUrl = user.ProfilePicUrl,
-            ManagerApplicationStatus = user.ManagerApplicationStatus,
+            ManagerApplicationStatus = managerApplicationStatus,
             ManagerApplicationNotes = user.ManagerApplicationNotes,
             ProposedLotName = user.ProposedLotName,
             ProposedLotAddress = user.ProposedLotAddress,

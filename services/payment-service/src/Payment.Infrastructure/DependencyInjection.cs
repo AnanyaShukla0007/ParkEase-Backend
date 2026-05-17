@@ -23,7 +23,14 @@ public static class DependencyInjection
 
         services.AddHttpClient<IBookingPaymentClient, BookingPaymentClient>(client =>
         {
-            client.BaseAddress = new Uri(configuration["Services:BookingUrl"]!);
+            var bookingUrl = configuration["Services:BookingUrl"];
+            if (string.IsNullOrWhiteSpace(bookingUrl) ||
+                bookingUrl.Contains("booking-service", StringComparison.OrdinalIgnoreCase))
+            {
+                bookingUrl = "https://parkease-booking-rcdk.onrender.com";
+            }
+
+            client.BaseAddress = new Uri(bookingUrl);
         });
 
         return services;
