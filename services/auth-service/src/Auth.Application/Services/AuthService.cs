@@ -450,6 +450,8 @@ public class AuthService : IAuthService
             VehiclePlate = user.VehiclePlate,
             ProfilePicUrl = user.ProfilePicUrl,
             ManagerApplicationStatus = managerApplicationStatus,
+            Status = managerApplicationStatus,
+            ApplicationStatus = managerApplicationStatus,
             ManagerApplicationNotes = user.ManagerApplicationNotes,
             ProposedLotName = user.ProposedLotName,
             ProposedLotAddress = user.ProposedLotAddress,

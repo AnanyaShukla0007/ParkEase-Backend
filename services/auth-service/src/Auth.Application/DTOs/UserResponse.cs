@@ -18,6 +18,10 @@ public class UserResponse
 
     public string ManagerApplicationStatus { get; set; } = string.Empty;
 
+    public string Status { get; set; } = string.Empty;
+
+    public string ApplicationStatus { get; set; } = string.Empty;
+
     public string? ManagerApplicationNotes { get; set; }
 
     public string? ProposedLotName { get; set; }
