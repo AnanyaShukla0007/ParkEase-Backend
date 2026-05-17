@@ -187,6 +187,40 @@ public class AuthController : ControllerBase
     public async Task<IActionResult> GetUsersByRole(string role)
         => Ok(await _service.GetUsersByRoleAsync(role));
 
+    [HttpGet("manager/applications")]
+    [AllowAnonymous]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetManagerApplications([FromQuery] string? status)
+        => Ok(new
+        {
+            success = true,
+            data = await _service.GetManagerApplicationsAsync(status)
+        });
+
+    [HttpPut("manager/applications/{userId:int}/approve")]
+    [Authorize(Roles = "ADMIN")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> ApproveManagerApplication(int userId)
+        => Ok(new
+        {
+            success = true,
+            message = "Manager application approved.",
+            data = await _service.ApproveManagerApplicationAsync(userId)
+        });
+
+    [HttpPut("manager/applications/{userId:int}/reject")]
+    [Authorize(Roles = "ADMIN")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> RejectManagerApplication(
+        int userId,
+        [FromBody] ManagerApplicationDecisionRequest request)
+        => Ok(new
+        {
+            success = true,
+            message = "Manager application rejected.",
+            data = await _service.RejectManagerApplicationAsync(userId, request.Reason)
+        });
+
     /// <summary>Get user by ID</summary>
     /// <remarks>
     /// ADMIN only endpoint. Returns a specific user profile by user ID.
@@ -235,6 +269,11 @@ public class AuthController : ControllerBase
     {
         await _service.DeleteAccountAsync(userId);
         return Ok(new { message = $"User {userId} deleted." });
+    }
+
+    public class ManagerApplicationDecisionRequest
+    {
+        public string? Reason { get; set; }
     }
 
     private int GetUserId()

@@ -43,6 +43,23 @@ public class AuthDbContext
             entity.Property(x => x.ProfilePicUrl)
                 .HasMaxLength(500);
 
+            entity.Property(x => x.ManagerApplicationStatus)
+                .IsRequired()
+                .HasMaxLength(20)
+                .HasDefaultValue("APPROVED");
+
+            entity.Property(x => x.ManagerApplicationNotes)
+                .HasMaxLength(500);
+
+            entity.Property(x => x.ProposedLotName)
+                .HasMaxLength(100);
+
+            entity.Property(x => x.ProposedLotAddress)
+                .HasMaxLength(200);
+
+            entity.Property(x => x.ProposedLotCity)
+                .HasMaxLength(100);
+
             entity.HasIndex(x => x.Email).IsUnique();
         });
 

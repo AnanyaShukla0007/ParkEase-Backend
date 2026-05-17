@@ -174,7 +174,9 @@ public class BookingService : IBookingService
 
         booking.Status = BookingStatus.Completed;
         booking.CheckOutTimeUtc = DateTime.UtcNow;
-        booking.FinalAmount = request.FinalAmount;
+        booking.FinalAmount = request.FinalAmount > 0
+            ? request.FinalAmount
+            : CalculateFinalAmount(booking, booking.CheckOutTimeUtc.Value);
         booking.UpdatedAtUtc = DateTime.UtcNow;
 
         await _spotClient.ReleaseSpotAsync(booking.SpotId);
@@ -227,13 +229,6 @@ public class BookingService : IBookingService
         if (end < start)
             end = start;
 
-        var totalHours = Math.Ceiling((end - start).TotalHours);
-
-        if (totalHours < 1)
-            totalHours = 1;
-
-        var finalAmount = booking.EstimatedAmount;
-
         if (booking.Status == BookingStatus.Completed && booking.FinalAmount > 0)
         {
             return new FarePreviewResponse
@@ -244,24 +239,37 @@ public class BookingService : IBookingService
             };
         }
 
-        if (booking.EstimatedAmount > 0)
-        {
-            var bookedHours = Math.Ceiling(
-                (booking.EndTimeUtc - booking.StartTimeUtc).TotalHours);
-
-            if (bookedHours <= 0)
-                bookedHours = 1;
-
-            var hourlyRate = booking.EstimatedAmount / (decimal)bookedHours;
-            finalAmount = hourlyRate * (decimal)totalHours;
-        }
-
         return new FarePreviewResponse
         {
             BookingId = booking.Id,
             EstimatedAmount = booking.EstimatedAmount,
-            FinalAmount = decimal.Round(finalAmount, 2)
+            FinalAmount = decimal.Round(CalculateFinalAmount(booking, end), 2)
         };
+    }
+
+    private static decimal CalculateFinalAmount(BookingEntity booking, DateTime endUtc)
+    {
+        var startUtc = booking.CheckInTimeUtc ?? booking.StartTimeUtc;
+        if (endUtc < startUtc)
+            endUtc = startUtc;
+
+        var bookedHours = Math.Ceiling((booking.EndTimeUtc - booking.StartTimeUtc).TotalHours);
+        if (bookedHours < 1)
+            bookedHours = 1;
+
+        var hourlyRate = booking.EstimatedAmount > 0
+            ? booking.EstimatedAmount / (decimal)bookedHours
+            : 0;
+
+        var parkedMinutes = (endUtc - startUtc).TotalMinutes;
+        if (parkedMinutes <= 30)
+            return decimal.Round(hourlyRate / 2, 2);
+
+        var billableHours = Math.Ceiling(parkedMinutes / 60);
+        if (billableHours < 1)
+            billableHours = 1;
+
+        return decimal.Round(hourlyRate * (decimal)billableHours, 2);
     }
 
     public async Task<LastParkedResponse?> GetLastParkedAsync(int userId)

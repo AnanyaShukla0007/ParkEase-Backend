@@ -26,6 +26,12 @@ public interface IAuthService
 
     Task<List<UserResponse>> GetUsersByRoleAsync(string role);
 
+    Task<List<UserResponse>> GetManagerApplicationsAsync(string? status);
+
+    Task<UserResponse> ApproveManagerApplicationAsync(int userId);
+
+    Task<UserResponse> RejectManagerApplicationAsync(int userId, string? reason);
+
     Task<UserResponse> UpdateProfileAsync(
         int userId,
         UpdateProfileRequest request);

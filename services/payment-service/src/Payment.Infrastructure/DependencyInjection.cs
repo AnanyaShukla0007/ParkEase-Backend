@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Payment.Application.Interfaces;
+using Payment.Infrastructure.Clients;
 using Payment.Infrastructure.Persistence;
 using Payment.Infrastructure.Repositories;
 
@@ -19,6 +20,11 @@ public static class DependencyInjection
                 b => b.MigrationsAssembly("Payment.Infrastructure")));
 
         services.AddScoped<IPaymentRepository, PaymentRepository>();
+
+        services.AddHttpClient<IBookingPaymentClient, BookingPaymentClient>(client =>
+        {
+            client.BaseAddress = new Uri(configuration["Services:BookingUrl"]!);
+        });
 
         return services;
     }

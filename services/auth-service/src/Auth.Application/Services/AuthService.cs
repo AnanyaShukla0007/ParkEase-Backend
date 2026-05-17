@@ -86,7 +86,7 @@ public class AuthService : IAuthService
         return await BuildAuthResponse(user);
     }
 
-    public Task<AuthResponse> ApplyManagerAsync(ManagerApplicationRequest request)
+    public async Task<AuthResponse> ApplyManagerAsync(ManagerApplicationRequest request)
     {
         var fullName = FirstValue(
             request.FullName,
@@ -124,14 +124,51 @@ public class AuthService : IAuthService
         if (string.IsNullOrWhiteSpace(lotName))
             throw new ArgumentException("Proposed lot name is required.");
 
-        return RegisterAsync(new RegisterRequest
+        var email = request.Email.Trim().ToLowerInvariant();
+        var existingUser = await _users.FindByEmailAsync(email);
+
+        if (existingUser is null)
         {
-            FullName = fullName,
-            Email = request.Email,
-            PhoneNumber = phone,
-            Password = "Manager@ParkEase2026",
-            Role = "MANAGER"
-        });
+            var user = new User
+            {
+                FullName = fullName,
+                Email = email,
+                UserName = email,
+                PhoneNumber = phone,
+                Role = "DRIVER",
+                ManagerApplicationStatus = "PENDING",
+                ManagerApplicationNotes = FirstValue(request.Notes, request.AnythingElse),
+                ProposedLotName = lotName,
+                ProposedLotAddress = address,
+                ProposedLotCity = city,
+                IsActive = true,
+                CreatedAt = DateTime.UtcNow
+            };
+
+            var result = await _userManager.CreateAsync(user, "Manager@ParkEase2026");
+
+            if (!result.Succeeded)
+                throw new InvalidOperationException(
+                    string.Join(", ", result.Errors.Select(x => x.Description)));
+
+            await _userManager.AddToRoleAsync(user, "DRIVER");
+            return await BuildAuthResponse(user);
+        }
+
+        existingUser.FullName = fullName;
+        existingUser.PhoneNumber = phone;
+        existingUser.ManagerApplicationStatus = "PENDING";
+        existingUser.ManagerApplicationNotes = FirstValue(request.Notes, request.AnythingElse);
+        existingUser.ProposedLotName = lotName;
+        existingUser.ProposedLotAddress = address;
+        existingUser.ProposedLotCity = city;
+        existingUser.UpdatedAt = DateTime.UtcNow;
+
+        if (existingUser.Role != "ADMIN")
+            existingUser.Role = existingUser.Role == "MANAGER" ? "MANAGER" : "DRIVER";
+
+        await _users.UpdateAsync(existingUser);
+        return await BuildAuthResponse(existingUser);
     }
 
 
@@ -242,6 +279,58 @@ public class AuthService : IAuthService
         return users.Select(Map).ToList();
     }
 
+    public async Task<List<UserResponse>> GetManagerApplicationsAsync(string? status)
+    {
+        var normalizedStatus = string.IsNullOrWhiteSpace(status)
+            ? null
+            : status.Trim().ToUpperInvariant();
+
+        var users = await _users.GetAllAsync();
+
+        return users
+            .Where(x => !string.IsNullOrWhiteSpace(x.ProposedLotName) ||
+                        x.ManagerApplicationStatus is "PENDING" or "APPROVED" or "REJECTED")
+            .Where(x => normalizedStatus is null || x.ManagerApplicationStatus == normalizedStatus)
+            .OrderByDescending(x => x.UpdatedAt ?? x.CreatedAt)
+            .Select(Map)
+            .ToList();
+    }
+
+    public async Task<UserResponse> ApproveManagerApplicationAsync(int userId)
+    {
+        var user = await _users.FindByIdAsync(userId)
+                   ?? throw new KeyNotFoundException("User not found.");
+
+        user.Role = "MANAGER";
+        user.ManagerApplicationStatus = "APPROVED";
+        user.UpdatedAt = DateTime.UtcNow;
+
+        await _users.UpdateAsync(user);
+
+        if (!await _userManager.IsInRoleAsync(user, "MANAGER"))
+            await _userManager.AddToRoleAsync(user, "MANAGER");
+
+        return Map(user);
+    }
+
+    public async Task<UserResponse> RejectManagerApplicationAsync(int userId, string? reason)
+    {
+        var user = await _users.FindByIdAsync(userId)
+                   ?? throw new KeyNotFoundException("User not found.");
+
+        user.ManagerApplicationStatus = "REJECTED";
+        user.ManagerApplicationNotes = string.IsNullOrWhiteSpace(reason)
+            ? user.ManagerApplicationNotes
+            : reason.Trim();
+        user.UpdatedAt = DateTime.UtcNow;
+
+        if (user.Role == "MANAGER")
+            user.Role = "DRIVER";
+
+        await _users.UpdateAsync(user);
+        return Map(user);
+    }
+
     public async Task<UserResponse> UpdateProfileAsync(int userId, UpdateProfileRequest request)
     {
         var user = await _users.FindByIdAsync(userId)
@@ -345,6 +434,11 @@ public class AuthService : IAuthService
             Role = user.Role,
             VehiclePlate = user.VehiclePlate,
             ProfilePicUrl = user.ProfilePicUrl,
+            ManagerApplicationStatus = user.ManagerApplicationStatus,
+            ManagerApplicationNotes = user.ManagerApplicationNotes,
+            ProposedLotName = user.ProposedLotName,
+            ProposedLotAddress = user.ProposedLotAddress,
+            ProposedLotCity = user.ProposedLotCity,
             IsActive = user.IsActive,
             CreatedAt = user.CreatedAt
         };

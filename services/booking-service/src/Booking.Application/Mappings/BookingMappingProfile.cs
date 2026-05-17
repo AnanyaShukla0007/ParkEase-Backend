@@ -24,7 +24,8 @@ public static class BookingMappingProfile
             CheckOutTimeUtc = booking.CheckOutTimeUtc,
             EstimatedAmount = booking.EstimatedAmount,
             FinalAmount = booking.FinalAmount,
-            CreatedAtUtc = booking.CreatedAtUtc
+            CreatedAtUtc = booking.CreatedAtUtc,
+            UpdatedAtUtc = booking.UpdatedAtUtc
         };
     }
 }

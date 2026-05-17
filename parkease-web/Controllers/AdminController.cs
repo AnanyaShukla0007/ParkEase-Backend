@@ -25,6 +25,9 @@ public class AdminController : Controller
         var model = new AdminDashboardViewModel
         {
             TotalUsers = await _authClient.GetUserCountAsync(),
+            PendingManagerApplications = await _authClient.GetManagerApplicationCountAsync("PENDING"),
+            ApprovedManagerApplications = await _authClient.GetManagerApplicationCountAsync("APPROVED"),
+            RejectedManagerApplications = await _authClient.GetManagerApplicationCountAsync("REJECTED"),
             PlatformSummary = await _analyticsClient.GetPlatformSummaryAsync(),
             DemandHeatmap = await _analyticsClient.GetDemandHeatmapAsync(),
             FailedHours = await _analyticsClient.GetFailedHoursAsync(),

@@ -9,10 +9,14 @@ namespace Payment.Application.Services;
 public class PaymentService : IPaymentService
 {
     private readonly IPaymentRepository _paymentRepository;
+    private readonly IBookingPaymentClient _bookingClient;
 
-    public PaymentService(IPaymentRepository paymentRepository)
+    public PaymentService(
+        IPaymentRepository paymentRepository,
+        IBookingPaymentClient bookingClient)
     {
         _paymentRepository = paymentRepository;
+        _bookingClient = bookingClient;
     }
 
     public async Task<PaymentResponse> CreateAsync(CreatePaymentRequest request)
@@ -111,15 +115,46 @@ public class PaymentService : IPaymentService
         if (payment.Status != PaymentStatus.Paid)
             throw new InvalidOperationException("Only paid payments can be refunded.");
 
+        var booking = await _bookingClient.GetBookingAsync(payment.BookingId)
+            ?? throw new InvalidOperationException("Booking details are required before refund.");
+
+        var refundAmount = GetRefundAmount(payment, booking);
+
         payment.Status = PaymentStatus.Refunded;
         payment.RefundedAtUtc = DateTime.UtcNow;
         payment.UpdatedAtUtc = DateTime.UtcNow;
-        payment.Notes = string.IsNullOrWhiteSpace(request.Reason)
-            ? payment.Notes
-            : request.Reason.Trim();
+        payment.Notes = $"Refund amount: {refundAmount:0.##} {payment.Currency}. " +
+                        (string.IsNullOrWhiteSpace(request.Reason)
+                            ? "Eligible refund processed."
+                            : request.Reason.Trim());
 
         await _paymentRepository.UpdateAsync(payment);
         return Map(payment);
+    }
+
+    private static decimal GetRefundAmount(PaymentEntity payment, BookingLookupResponse booking)
+    {
+        if (booking.IsCancelled && booking.CheckInTimeUtc is null)
+        {
+            var cancelledAt = booking.UpdatedAtUtc ?? DateTime.UtcNow;
+            var minutesFromReservation = (cancelledAt - booking.CreatedAtUtc).TotalMinutes;
+
+            if (minutesFromReservation <= 15)
+                return payment.Amount;
+
+            throw new InvalidOperationException(
+                "Refund is only available when a reservation is cancelled within 15 minutes before check-in.");
+        }
+
+        if (!booking.IsCompleted || booking.CheckInTimeUtc is null || booking.CheckOutTimeUtc is null)
+            throw new InvalidOperationException("Refund is only available after checkout or eligible cancellation.");
+
+        var parkedMinutes = (booking.CheckOutTimeUtc.Value - booking.CheckInTimeUtc.Value).TotalMinutes;
+
+        if (parkedMinutes < 30)
+            return decimal.Round(payment.Amount / 2, 2);
+
+        throw new InvalidOperationException("Refund is only available if you parked for less than 30 minutes.");
     }
 
     private static PaymentResponse Map(PaymentEntity payment) => new()
