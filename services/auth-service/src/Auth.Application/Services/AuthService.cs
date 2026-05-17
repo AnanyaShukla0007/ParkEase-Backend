@@ -34,6 +34,8 @@ public class AuthService : IAuthService
         if (role is not "DRIVER" and not "MANAGER" and not "ADMIN")
             role = "DRIVER";
 
+        var isManagerApplication = role == "MANAGER";
+
         var existingUser = await _users.FindByEmailAsync(email);
         if (existingUser is not null)
         {
@@ -45,14 +47,13 @@ public class AuthService : IAuthService
 
                 existingUser.FullName = request.FullName.Trim();
                 existingUser.PhoneNumber = phone;
-                existingUser.Role = "MANAGER";
+                existingUser.Role = existingUser.Role == "MANAGER" ? "MANAGER" : "DRIVER";
+                existingUser.ManagerApplicationStatus = "PENDING";
+                existingUser.ProposedLotName ??= "Pending lot application";
                 existingUser.IsActive = true;
                 existingUser.UpdatedAt = DateTime.UtcNow;
 
                 await _users.UpdateAsync(existingUser);
-
-                if (!await _userManager.IsInRoleAsync(existingUser, "MANAGER"))
-                    await _userManager.AddToRoleAsync(existingUser, "MANAGER");
 
                 return await BuildAuthResponse(existingUser);
             }
@@ -69,8 +70,10 @@ public class AuthService : IAuthService
             Email = email,
             UserName = email,
             PhoneNumber = phone,
-            Role = role,
+            Role = isManagerApplication ? "DRIVER" : role,
             VehiclePlate = request.VehiclePlate,
+            ManagerApplicationStatus = isManagerApplication ? "PENDING" : "NONE",
+            ProposedLotName = isManagerApplication ? "Pending lot application" : null,
             IsActive = true,
             CreatedAt = DateTime.UtcNow
         };
@@ -288,7 +291,9 @@ public class AuthService : IAuthService
         var users = await _users.GetAllAsync();
 
         return users
-            .Where(x => !string.IsNullOrWhiteSpace(x.ProposedLotName))
+            .Where(x => !string.IsNullOrWhiteSpace(x.ProposedLotName) ||
+                        x.ManagerApplicationStatus is "PENDING" or "APPROVED" or "REJECTED" ||
+                        x.Role == "MANAGER")
             .Where(x => normalizedStatus is null || x.ManagerApplicationStatus == normalizedStatus)
             .OrderByDescending(x => x.UpdatedAt ?? x.CreatedAt)
             .Select(Map)

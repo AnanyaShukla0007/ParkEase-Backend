@@ -129,9 +129,9 @@ public class PaymentsController : ControllerBase
     }
 
     /// <summary>Refund payment</summary>
-    /// <remarks>Access: MANAGER, ADMIN. Refunds a previously paid payment and stores the refund reason.</remarks>
+    /// <remarks>Access: DRIVER, MANAGER, ADMIN. Refunds a previously paid payment when refund rules allow it.</remarks>
     [HttpPut("{id:int}/refund")]
-    [Authorize(Roles = "MANAGER,ADMIN")]
+    [Authorize(Roles = "DRIVER,MANAGER,ADMIN")]
     public async Task<IActionResult> Refund(int id, [FromBody] RefundPaymentRequest request)
     {
         var result = await _paymentService.RefundAsync(id, request);

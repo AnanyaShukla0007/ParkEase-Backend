@@ -134,6 +134,12 @@ using (var scope = app.Services.CreateScope())
             SET "ManagerApplicationStatus" = 'NONE'
             WHERE "ProposedLotName" IS NULL
               AND "ManagerApplicationStatus" = 'APPROVED';
+
+        UPDATE "Users"
+            SET "ManagerApplicationStatus" = 'PENDING',
+                "ProposedLotName" = COALESCE("ProposedLotName", 'Pending lot application')
+            WHERE "Role" = 'MANAGER'
+              AND "ManagerApplicationStatus" = 'NONE';
         """);
     await AuthUserSeeder.SeedAsync(scope.ServiceProvider);
 }
