@@ -12,7 +12,7 @@ public class User : IdentityUser<int>
 
     public string? ProfilePicUrl { get; set; }
 
-    public string ManagerApplicationStatus { get; set; } = "APPROVED";
+    public string ManagerApplicationStatus { get; set; } = "NONE";
 
     public string? ManagerApplicationNotes { get; set; }
 

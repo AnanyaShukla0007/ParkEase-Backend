@@ -21,7 +21,7 @@ namespace Auth.Infrastructure.Migrations
                 type: "character varying(20)",
                 maxLength: 20,
                 nullable: false,
-                defaultValue: "APPROVED");
+                defaultValue: "NONE");
 
             migrationBuilder.AddColumn<string>(
                 name: "ProposedLotAddress",

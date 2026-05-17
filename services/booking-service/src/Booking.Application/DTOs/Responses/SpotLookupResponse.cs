@@ -6,4 +6,5 @@ public class SpotLookupResponse
     public int LotId { get; set; }
     public string SpotNumber { get; set; } = string.Empty;
     public int Floor { get; set; }
+    public decimal PricePerHour { get; set; }
 }

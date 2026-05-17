@@ -44,6 +44,14 @@ public class BookingService : IBookingService
         if (!reserved)
             throw new Exception("Unable to reserve selected spot.");
 
+        var spot = await _spotClient.GetSpotByIdAsync(request.SpotId);
+        var estimatedAmount = request.EstimatedAmount > 0
+            ? request.EstimatedAmount
+            : CalculateEstimatedAmount(
+                request.StartTimeUtc,
+                request.EndTimeUtc,
+                spot?.PricePerHour ?? 0);
+
         var lotUpdated = await _parkingLotClient.DecrementAvailableAsync(request.LotId);
 
         if (!lotUpdated)
@@ -64,7 +72,7 @@ public class BookingService : IBookingService
             PaymentState = PaymentState.NotRequired,
             StartTimeUtc = request.StartTimeUtc,
             EndTimeUtc = request.EndTimeUtc,
-            EstimatedAmount = request.EstimatedAmount,
+            EstimatedAmount = estimatedAmount,
             FinalAmount = 0,
             Notes = request.Notes,
             CreatedAtUtc = DateTime.UtcNow
@@ -174,6 +182,16 @@ public class BookingService : IBookingService
 
         booking.Status = BookingStatus.Completed;
         booking.CheckOutTimeUtc = DateTime.UtcNow;
+
+        if (booking.EstimatedAmount <= 0)
+        {
+            var spot = await _spotClient.GetSpotByIdAsync(booking.SpotId);
+            booking.EstimatedAmount = CalculateEstimatedAmount(
+                booking.StartTimeUtc,
+                booking.EndTimeUtc,
+                spot?.PricePerHour ?? 0);
+        }
+
         booking.FinalAmount = request.FinalAmount > 0
             ? request.FinalAmount
             : CalculateFinalAmount(booking, booking.CheckOutTimeUtc.Value);
@@ -229,6 +247,15 @@ public class BookingService : IBookingService
         if (end < start)
             end = start;
 
+        if (booking.EstimatedAmount <= 0)
+        {
+            var spot = await _spotClient.GetSpotByIdAsync(booking.SpotId);
+            booking.EstimatedAmount = CalculateEstimatedAmount(
+                booking.StartTimeUtc,
+                booking.EndTimeUtc,
+                spot?.PricePerHour ?? 0);
+        }
+
         if (booking.Status == BookingStatus.Completed && booking.FinalAmount > 0)
         {
             return new FarePreviewResponse
@@ -245,6 +272,21 @@ public class BookingService : IBookingService
             EstimatedAmount = booking.EstimatedAmount,
             FinalAmount = decimal.Round(CalculateFinalAmount(booking, end), 2)
         };
+    }
+
+    private static decimal CalculateEstimatedAmount(
+        DateTime startUtc,
+        DateTime endUtc,
+        decimal pricePerHour)
+    {
+        if (pricePerHour <= 0)
+            return 0;
+
+        var bookedHours = Math.Ceiling((endUtc - startUtc).TotalHours);
+        if (bookedHours < 1)
+            bookedHours = 1;
+
+        return decimal.Round(pricePerHour * (decimal)bookedHours, 2);
     }
 
     private static decimal CalculateFinalAmount(BookingEntity booking, DateTime endUtc)

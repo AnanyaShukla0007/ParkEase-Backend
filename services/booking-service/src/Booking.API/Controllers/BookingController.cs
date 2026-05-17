@@ -212,11 +212,15 @@ public class BookingsController : ControllerBase
                 message = "Unable to check out booking."
             });
 
+        var booking = await _bookingService.GetByIdAsync(id);
+
         return Ok(new
         {
             success = true,
             message = "Checked out successfully.",
-            bookingId = id
+            bookingId = id,
+            finalAmount = booking?.FinalAmount ?? 0,
+            data = booking
         });
     }
 

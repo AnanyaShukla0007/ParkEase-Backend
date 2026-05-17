@@ -197,6 +197,47 @@ public class AuthController : ControllerBase
             data = await _service.GetManagerApplicationsAsync(status)
         });
 
+    [HttpGet("manager/applications/all")]
+    [AllowAnonymous]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetAllManagerApplications()
+        => await GetManagerApplications(null);
+
+    [HttpGet("manager/applications/pending")]
+    [AllowAnonymous]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetPendingManagerApplications()
+        => await GetManagerApplications("PENDING");
+
+    [HttpGet("manager/applications/approved")]
+    [AllowAnonymous]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetApprovedManagerApplications()
+        => await GetManagerApplications("APPROVED");
+
+    [HttpGet("manager/applications/rejected")]
+    [AllowAnonymous]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetRejectedManagerApplications()
+        => await GetManagerApplications("REJECTED");
+
+    [HttpGet("manager/applications/summary")]
+    [AllowAnonymous]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetManagerApplicationSummary()
+    {
+        var applications = await _service.GetManagerApplicationsAsync(null);
+
+        return Ok(new
+        {
+            success = true,
+            total = applications.Count,
+            pending = applications.Count(x => x.ManagerApplicationStatus == "PENDING"),
+            approved = applications.Count(x => x.ManagerApplicationStatus == "APPROVED"),
+            rejected = applications.Count(x => x.ManagerApplicationStatus == "REJECTED")
+        });
+    }
+
     [HttpPut("manager/applications/{userId:int}/approve")]
     [Authorize(Roles = "ADMIN")]
     [ProducesResponseType(StatusCodes.Status200OK)]

@@ -46,7 +46,7 @@ public class AuthDbContext
             entity.Property(x => x.ManagerApplicationStatus)
                 .IsRequired()
                 .HasMaxLength(20)
-                .HasDefaultValue("APPROVED");
+                .HasDefaultValue("NONE");
 
             entity.Property(x => x.ManagerApplicationNotes)
                 .HasMaxLength(500);

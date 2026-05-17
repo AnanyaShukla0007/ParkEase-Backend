@@ -116,7 +116,7 @@ using (var scope = app.Services.CreateScope())
             ADD COLUMN IF NOT EXISTS "ManagerApplicationNotes" character varying(500) NULL;
 
         ALTER TABLE "Users"
-            ADD COLUMN IF NOT EXISTS "ManagerApplicationStatus" character varying(20) NOT NULL DEFAULT 'APPROVED';
+            ADD COLUMN IF NOT EXISTS "ManagerApplicationStatus" character varying(20) NOT NULL DEFAULT 'NONE';
 
         ALTER TABLE "Users"
             ADD COLUMN IF NOT EXISTS "ProposedLotAddress" character varying(200) NULL;
@@ -126,6 +126,14 @@ using (var scope = app.Services.CreateScope())
 
         ALTER TABLE "Users"
             ADD COLUMN IF NOT EXISTS "ProposedLotName" character varying(100) NULL;
+
+        ALTER TABLE "Users"
+            ALTER COLUMN "ManagerApplicationStatus" SET DEFAULT 'NONE';
+
+        UPDATE "Users"
+            SET "ManagerApplicationStatus" = 'NONE'
+            WHERE "ProposedLotName" IS NULL
+              AND "ManagerApplicationStatus" = 'APPROVED';
         """);
     await AuthUserSeeder.SeedAsync(scope.ServiceProvider);
 }

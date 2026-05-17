@@ -288,8 +288,7 @@ public class AuthService : IAuthService
         var users = await _users.GetAllAsync();
 
         return users
-            .Where(x => !string.IsNullOrWhiteSpace(x.ProposedLotName) ||
-                        x.ManagerApplicationStatus is "PENDING" or "APPROVED" or "REJECTED")
+            .Where(x => !string.IsNullOrWhiteSpace(x.ProposedLotName))
             .Where(x => normalizedStatus is null || x.ManagerApplicationStatus == normalizedStatus)
             .OrderByDescending(x => x.UpdatedAt ?? x.CreatedAt)
             .Select(Map)
