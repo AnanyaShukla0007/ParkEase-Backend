@@ -111,6 +111,22 @@ using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AuthDbContext>();
     db.Database.Migrate();
+    db.Database.ExecuteSqlRaw("""
+        ALTER TABLE "Users"
+            ADD COLUMN IF NOT EXISTS "ManagerApplicationNotes" character varying(500) NULL;
+
+        ALTER TABLE "Users"
+            ADD COLUMN IF NOT EXISTS "ManagerApplicationStatus" character varying(20) NOT NULL DEFAULT 'APPROVED';
+
+        ALTER TABLE "Users"
+            ADD COLUMN IF NOT EXISTS "ProposedLotAddress" character varying(200) NULL;
+
+        ALTER TABLE "Users"
+            ADD COLUMN IF NOT EXISTS "ProposedLotCity" character varying(100) NULL;
+
+        ALTER TABLE "Users"
+            ADD COLUMN IF NOT EXISTS "ProposedLotName" character varying(100) NULL;
+        """);
     await AuthUserSeeder.SeedAsync(scope.ServiceProvider);
 }
 
